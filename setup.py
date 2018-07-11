@@ -17,12 +17,12 @@ tests_require = [
 ]
 
 setup(
-    name='sentry-auth-google',
-    version='0.2.0.dev0',
+    name='sentry-auth-oidc',
+    version='1.0.0',
     author='Sentry',
     author_email='support@getsentry.com',
     url='https://www.getsentry.com',
-    description='Google authentication provider for Sentry',
+    description='OpenID Connect authentication provider for Sentry',
     long_description=__doc__,
     license='Apache 2.0',
     packages=find_packages(exclude=['tests']),
@@ -33,7 +33,7 @@ setup(
     include_package_data=True,
     entry_points={
         'sentry.apps': [
-            'auth_google = sentry_auth_google',
+            'sentry_auth_oidc = sentry_auth_oidc',
         ],
     },
     classifiers=[
