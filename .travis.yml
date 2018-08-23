@@ -11,20 +11,14 @@ cache:
   - node_modules
   - "$HOME/.cache/pip"
 deploy:
-  provider: pypi
-  server: https://test.pypi.org/legacy/
-  user: max-wittig
-  password:
-    secure: "NOcuIVrhvSQIFE0oeCvI2AOH2tSSmUoQqDPiGt0SMf9K2j0QMeQznycrIxCK9kztTPyWvr0gS2Ntrpem9FEGLUH+48U7TcOvRx4QH/pl50Oo5Yslfgi3F8zIUUeTp4h4/UAK4kLm+65tHSBSE4bnFlXtPqDpqumDuTLhd+gimTRT+/tq/wxkEEr3yUaH2z3fTxatpis3npTbVVwDIvN3avE3ogOKBIfal/z24ppZohzqRtxXhKK8cgCpS3sz8HhOGlGCNvexCV1hkY3X+hKvVevbM8hQJW61sQk8XUzzg+zAjE+lEcijOMV22kruAUT99RSnhW2MXr3ibuBLvS8fS+OfyTI47i5/MHcjxrfXcdM94AwuiQItGvDmfWopZG6RHuSP11IZ4no/rd8ZvbsgP3v4gTpubUC7y9EwSy6RbIJEAYlvzO6D+fiXsq34N1lWWu1WtbN3yRraI+WsrX3eCHH/x52UjyNbNShS7hsUdU/ohQwaMjsnUPlAytV9e+Jk5PBLUS/Li6VhQ4ljlbVZYALymxlepmOY41BPfnhNDf/OrQ21qMOuCCpMA8grLDKE6O9qfSi29rHuG7/6LWfgA/3JcvjXBuk7EbQinZ28wiBwKEd2trEzKlacQKhEjXY0TkTUmYnG98NVBdgCiFVDrrg8BCeSHRhQ4cgQrElvWAs="
-  distributions: sdist bdist_wheel
-deploy:
-  provider: pypi
-  user: max-wittig
-  password:
-    secure: "HYE3IOLNlY1eugoWBOLkvO1L52ypXKSYrtoIQF2cFeWVFhW/4pOjuJDkW0zRz75Dq0PHwBcAHgMVXZYN2921xVAf7eAemMkdTAbwOCgjBbQ7VtT/FCX7zcxBmghpxtnRtSLMX+xI2lxOg52+F1DuqrQISQb8LA+yQrles5tkFVPr65EQkrqdYap1IheqevG/WmKvoETbye+nr1TUpvF8h+sfG3bQsOXrmC/blFQPL+KRe6SeffNcVpxbtXtUl3r8yzyoi78S6DutlYkgOP5HO0ErKb3y1gbWlLWKYiLPFieQTVVbsIagfIQ7Zo0BZAQxjtJmgNfZqnP8vvTwkmxMofHbd/ru1djFsKDpEDq5UktQ8lMhvI1lHe/Td3AnL8AoC+OK20gfgwxcnsmTTM/87N3L/ILwoBePJXOyIpefZHGXLRymlF38UKYg9fOyKLHZik/Aqo562F4X63oBFkRM+jGM7MXr2GiUjul49k0NUbRa3UQHu3d2AlkEvFXbmd2f4F8/gTdaMhVdkTao7I8EJBTu8+HgGqcyaIwAATeV0blQiPragVjOu3wa2ZnQk34N7Zlgseis8n3Vs0JPyNUJIm/PtZlt+49hfQxJRZICpjm8zvhkPDldkRv8tKnq26i+TMrz4CIv4gzQyNqs/Ux1rs7HGolEOjNyx2Dt82AUoYI="
-  distributions: sdist bdist_wheel
-  on:
-    tags: true
+  - provider: pypi
+    server: https://test.pypi.org/legacy/
+    user: max-wittig
+    password:
+      secure: "NOcuIVrhvSQIFE0oeCvI2AOH2tSSmUoQqDPiGt0SMf9K2j0QMeQznycrIxCK9kztTPyWvr0gS2Ntrpem9FEGLUH+48U7TcOvRx4QH/pl50Oo5Yslfgi3F8zIUUeTp4h4/UAK4kLm+65tHSBSE4bnFlXtPqDpqumDuTLhd+gimTRT+/tq/wxkEEr3yUaH2z3fTxatpis3npTbVVwDIvN3avE3ogOKBIfal/z24ppZohzqRtxXhKK8cgCpS3sz8HhOGlGCNvexCV1hkY3X+hKvVevbM8hQJW61sQk8XUzzg+zAjE+lEcijOMV22kruAUT99RSnhW2MXr3ibuBLvS8fS+OfyTI47i5/MHcjxrfXcdM94AwuiQItGvDmfWopZG6RHuSP11IZ4no/rd8ZvbsgP3v4gTpubUC7y9EwSy6RbIJEAYlvzO6D+fiXsq34N1lWWu1WtbN3yRraI+WsrX3eCHH/x52UjyNbNShS7hsUdU/ohQwaMjsnUPlAytV9e+Jk5PBLUS/Li6VhQ4ljlbVZYALymxlepmOY41BPfnhNDf/OrQ21qMOuCCpMA8grLDKE6O9qfSi29rHuG7/6LWfgA/3JcvjXBuk7EbQinZ28wiBwKEd2trEzKlacQKhEjXY0TkTUmYnG98NVBdgCiFVDrrg8BCeSHRhQ4cgQrElvWAs="
+    distributions: sdist bdist_wheel
+    on:
+      all_branches: true
 env:
   global:
   - PIP_DOWNLOAD_CACHE=".pip_download_cache"

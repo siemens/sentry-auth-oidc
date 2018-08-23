@@ -17,9 +17,9 @@ tests_require = [
 
 setup(
     name='sentry-auth-oidc',
-    version='1.0.0',
+    version='1.0.1',
     author='Max Wittig',
-    author_email='max.wittig.de@gmail.com',
+    author_email='max.wittig@siemens.com',
     url='https://www.getsentry.com',
     description='OpenID Connect authentication provider for Sentry',
     long_description=readme,
