@@ -11,13 +11,13 @@ cache:
   - node_modules
   - "$HOME/.cache/pip"
 deploy:
-  provider: pypi
-  user: getsentry
+- provider: pypi
+  user: max-wittig
   password:
-    secure: rxcTucdBjCLO70XNANoVEcqnffR+2ZVFsnhA/lKkr+NC23GIHhDql6k3ZpXL2mRnA0UHA/AHK/PounBbN8xom7PKbS0MNwlNswBWax7C4OajxD79+a8UhzE5oxEPoA4VQxw65RKscVYt6rhZ6ynRemXVQDjokthVbDuEFZ4irM+Mbkxuq1O9RvDHOot3Q5AxxDwo7hFhuhOvsqs13FBXv28YLzDExirVQBoabck1Is+0pkPiqR5Mwoh6D9yDFA/fZzoX9ROqJfTAmpWQNwvwXEk1O6W42V3JDD/n+WaZ2jxyGTlmrJ/OzONSz0E+hMpoIJtTuz1vb7WL+hjTAZDd01dxECizsY5g0j/NDTvkaNWJSBXX9HGmAQYxShuGE2Q2/zJGAxSx3x6CgtQSuA00Y4TzZ8OadXLIQ1dSK2EeovEj0dZ7Q75L7ZmNszObUPB170ZJC4blmcYM+17dtSQbfuQkvhoAvhApXpyZQNr2NAme1ZC44s62IEPwMLWEMbdsBzTJCDT6RSmWuEMzs/WSw1w1P1DNXILkIDONyVbcwwM22aMkaG0F8V05qqlkXQPBmj7X9LX6YaX5zplzt8S5E1KsBuiOcKGjw5sQwrw06KR+79j+r/ORbSiTrS7xUBANradohP5jDou4R/nsxf1VuDQmGnFoL6kkE4YHpW0itLE=
+    secure: "D5OHhp/WS2OAdXozy8s31FAOoJM77BWDIDXCd8dLNmY15MV2NeXUeOT+gNiwv+7Rawdxd5VvFqqn5641bO1yTECsSDIF8joSXU8Hn8k6P6KEU9rhEC/PohrGm9dSO7xy2RdizCnh75Cl8wZ1pcsVH7ExD0H4/Dmp/352f4iD3ELUFRxdpfNx/Dk+nyfdPN53uj5vHXNEXOLXpA8h0G1SFlw+YRYEcZRk4GijhD6hMPnvvSkreIFxW7rhbi2gnVvhxl4TxKRKwQutQVeNe6B9cpw8tuDJfYqM76EJWAEtcciaWyIS5aqaqKPjwktTgkwV+xpRbkPx6Za9Xd3ZTz38nqEIVW6kJFkxyLIUOjUJiMGS4BvRKuhsHSLFOqjgdsQa2dwptIsrdsgDQNFLYroBJAGNnhPBWrIv6vKCL+jTbWTJINPtsnQh4QBLUCYaZdjHG/L0qT68UNRrjTNu7R1Q6hhm6L9Rsp11l1wL8S/3h2TfinU2OHmMTKfLUZcoUh5/H9crOn490NQ1YzFpsV+WlGy3WuvqG6c7ugl2TJ7RHqq4wgYbeVYOoniqBdpAqiLFDp8UUAVZUrigfw/hBgdgBtnw6AlaMgPOlltZflig9GC54jmZAsZK54kGKXt8oPeLMF2ipFiY0sXoVCxbC2HhbDX8yK+tIXBqYJ+fM5fF76w="
+  distributions: sdist bdist_wheel
   on:
     tags: true
-  distributions: sdist bdist_wheel
 env:
   global:
   - PIP_DOWNLOAD_CACHE=".pip_download_cache"
@@ -25,6 +25,7 @@ env:
   - SENTRY_SKIP_BACKEND_VALIDATION=1
 before_install:
 - pip install codecov
+- pip install -U setuptools
 install:
 - make develop
 script:

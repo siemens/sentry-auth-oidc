@@ -1,29 +1,28 @@
 #!/usr/bin/env python
-"""
-sentry-auth-google
-==================
-
-:copyright: (c) 2016 Functional Software, Inc
-"""
+from __future__ import absolute_import
 from setuptools import setup, find_packages
 
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
 
 install_requires = [
     'sentry>=7.0.0',
+    'python-gitlab>=1.5.1',
+    'requests<2.19.0,>=2.18.4',
 ]
 
 tests_require = [
-    'flake8>=2.0,<2.1',
+    'flake8>=3.5',
 ]
 
 setup(
     name='sentry-auth-oidc',
-    version='1.0.0',
-    author='Sentry',
-    author_email='support@getsentry.com',
+    version='1.0.1',
+    author='Max Wittig',
+    author_email='max.wittig@siemens.com',
     url='https://www.getsentry.com',
     description='OpenID Connect authentication provider for Sentry',
-    long_description=__doc__,
+    long_description=readme,
     license='Apache 2.0',
     packages=find_packages(exclude=['tests']),
     zip_safe=False,
@@ -40,6 +39,6 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Operating System :: OS Independent',
-        'Topic :: Software Development'
+        'Topic :: Software Development',
     ],
 )

@@ -1,9 +1,9 @@
 .PHONY: clean develop install-tests lint publish test
 
 develop:
-	pip install "pip>=7"
-	pip install -e git+https://github.com/getsentry/sentry.git#egg=sentry[dev]
-	pip install -e .
+	pip2 install "pip>=7"
+	pip2 install -e git+https://github.com/getsentry/sentry.git#egg=sentry[dev]
+	pip2 install -e .
 	make install-tests
 
 install-tests:
