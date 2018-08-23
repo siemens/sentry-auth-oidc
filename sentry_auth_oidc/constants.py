@@ -15,7 +15,7 @@ WELL_KNOWN_SCHEME = "/.well-known/openid-configuration"
 ERR_INVALID_RESPONSE = 'Unable to fetch user information from provider.  Please check the log.'
 DATA_VERSION = '1'
 
-WELL_KNOWN_URL = getattr(settings, 'WELL_KNOWN_URL')
+WELL_KNOWN_URL = getattr(settings, 'WELL_KNOWN_URL', None)
 if WELL_KNOWN_URL:
     WELL_KNOWN_URL = WELL_KNOWN_URL.strip("/") + WELL_KNOWN_SCHEME
     well_known_values = requests.get(WELL_KNOWN_URL, timeout=2.0).json()
