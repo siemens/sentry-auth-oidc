@@ -1,28 +1,34 @@
 from __future__ import absolute_import, print_function
 
-from sentry.auth.provider import MigratingIdentityId
+import requests
+
 from sentry.auth.providers.oauth2 import (
     OAuth2Callback, OAuth2Provider, OAuth2Login
 )
-
 from .constants import (
-    AUTHORIZE_URL, ACCESS_TOKEN_URL, CLIENT_ID, CLIENT_SECRET, DATA_VERSION,
-    SCOPE
+    AUTHORIZATION_ENDPOINT,
+    USERINFO_ENDPOINT,
+    ISSUER, TOKEN_ENDPOINT,
+    CLIENT_SECRET,
+    CLIENT_ID,
+    SCOPE, DATA_VERSION
 )
-from .views import FetchUser, GoogleConfigureView
+from .views import FetchUser, OIDCConfigureView
+import logging
+logger = logging.getLogger('sentry.auth.oidc')
 
 
-class GoogleOAuth2Login(OAuth2Login):
-    authorize_url = AUTHORIZE_URL
+class OIDCLogin(OAuth2Login):
+    authorize_url = AUTHORIZATION_ENDPOINT
     client_id = CLIENT_ID
     scope = SCOPE
 
     def __init__(self, domains=None):
         self.domains = domains
-        super(GoogleOAuth2Login, self).__init__()
+        super(OIDCLogin, self).__init__()
 
     def get_authorize_params(self, state, redirect_uri):
-        params = super(GoogleOAuth2Login, self).get_authorize_params(
+        params = super(OIDCLogin, self).get_authorize_params(
             state, redirect_uri
         )
         # TODO(dcramer): ideally we could look at the current resulting state
@@ -33,8 +39,8 @@ class GoogleOAuth2Login(OAuth2Login):
         return params
 
 
-class GoogleOAuth2Provider(OAuth2Provider):
-    name = 'Google'
+class OIDCProvider(OAuth2Provider):
+    name = ISSUER
     client_id = CLIENT_ID
     client_secret = CLIENT_SECRET
 
@@ -54,16 +60,16 @@ class GoogleOAuth2Provider(OAuth2Provider):
         else:
             version = None
         self.version = version
-        super(GoogleOAuth2Provider, self).__init__(**config)
+        super(OIDCProvider, self).__init__(**config)
 
     def get_configure_view(self):
-        return GoogleConfigureView.as_view()
+        return OIDCConfigureView.as_view()
 
     def get_auth_pipeline(self):
         return [
-            GoogleOAuth2Login(domains=self.domains),
+            OIDCLogin(domains=self.domains),
             OAuth2Callback(
-                access_token_url=ACCESS_TOKEN_URL,
+                access_token_url=TOKEN_ENDPOINT,
                 client_id=self.client_id,
                 client_secret=self.client_secret,
             ),
@@ -74,7 +80,7 @@ class GoogleOAuth2Provider(OAuth2Provider):
         ]
 
     def get_refresh_token_url(self):
-        return ACCESS_TOKEN_URL
+        return TOKEN_ENDPOINT
 
     def build_config(self, state):
         return {
@@ -82,32 +88,26 @@ class GoogleOAuth2Provider(OAuth2Provider):
             'version': DATA_VERSION,
         }
 
+    def get_user_info(self, bearer_token):
+        endpoint = USERINFO_ENDPOINT
+        bearer_auth = 'Bearer ' + bearer_token
+        return requests.get(endpoint + "?schema=openid",
+                            headers={'Authorization': bearer_auth},
+                            timeout=2.0).json()
+
     def build_identity(self, state):
-        # https://developers.google.com/identity/protocols/OpenIDConnect#server-flow
-        # data.user => {
-        #      "iss":"accounts.google.com",
-        #      "at_hash":"HK6E_P6Dh8Y93mRNtsDB1Q",
-        #      "email_verified":"true",
-        #      "sub":"10769150350006150715113082367",
-        #      "azp":"1234987819200.apps.googleusercontent.com",
-        #      "email":"jsmith@example.com",
-        #      "aud":"1234987819200.apps.googleusercontent.com",
-        #      "iat":1353601026,
-        #      "exp":1353604926,
-        #      "hd":"example.com"
-        # }
         data = state['data']
+        bearer_token = data['access_token']
+        user_info = self.get_user_info(bearer_token)
+        if not user_info.get('email'):
+            logger.error('Missing email in user endpoint: %s' % data)
+
         user_data = state['user']
-
-        # XXX(epurkhiser): We initially were using the email as the id key.
-        # This caused account dupes on domain changes. Migrate to the
-        # account-unique sub key.
-        user_id = MigratingIdentityId(id=user_data['sub'], legacy_id=user_data['email'])
-
         return {
-            'id': user_id,
-            'email': user_data['email'],
-            'name': user_data['email'],
+            'id': user_data.get('sub'),
+            'email': user_info.get('email'),
+            'email_verified': user_info.get('email_verified'),
+            'nickname': user_info.get('nickname'),
+            'name': user_info.get('name'),
             'data': self.get_oauth_data(data),
-            'email_verified': user_data['email_verified'],
         }
