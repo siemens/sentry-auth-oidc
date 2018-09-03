@@ -17,7 +17,7 @@ Install
 
 ::
 
-    $ pip install https://github.com/siemens/sentry-auth-oidc/archive/master.zip
+    $ pip install sentry-auth-oidc
 
 Example Setup for Google
 ------------------------
