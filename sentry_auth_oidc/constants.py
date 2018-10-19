@@ -3,21 +3,21 @@ from __future__ import absolute_import, print_function
 from django.conf import settings
 import requests
 
-AUTHORIZATION_ENDPOINT = getattr(settings, 'AUTHORIZATION_ENDPOINT', None)
-TOKEN_ENDPOINT = getattr(settings, 'TOKEN_ENDPOINT', None)
-CLIENT_ID = getattr(settings, 'CLIENT_ID', None)
-CLIENT_SECRET = getattr(settings, 'CLIENT_SECRET', None)
-USERINFO_ENDPOINT = getattr(settings, 'USERINFO_ENDPOINT', None)
-SCOPE = getattr(settings, 'SCOPE', 'openid email')
-ISSUER = getattr(settings, 'ISSUER', None)
+AUTHORIZATION_ENDPOINT = getattr(settings, 'OIDC_AUTHORIZATION_ENDPOINT', None)
+TOKEN_ENDPOINT = getattr(settings, 'OIDC_TOKEN_ENDPOINT', None)
+CLIENT_ID = getattr(settings, 'OIDC_CLIENT_ID', None)
+CLIENT_SECRET = getattr(settings, 'OIDC_CLIENT_SECRET', None)
+USERINFO_ENDPOINT = getattr(settings, 'OIDC_USERINFO_ENDPOINT', None)
+SCOPE = getattr(settings, 'OIDC_SCOPE', 'openid email')
+ISSUER = getattr(settings, 'OIDC_ISSUER', None)
 
 WELL_KNOWN_SCHEME = "/.well-known/openid-configuration"
 ERR_INVALID_RESPONSE = 'Unable to fetch user information from provider.  Please check the log.'
 DATA_VERSION = '1'
 
-WELL_KNOWN_URL = getattr(settings, 'WELL_KNOWN_URL', None)
-if WELL_KNOWN_URL:
-    WELL_KNOWN_URL = WELL_KNOWN_URL.strip("/") + WELL_KNOWN_SCHEME
+OIDC_DOMAIN = getattr(settings, 'OIDC_DOMAIN', None)
+if OIDC_DOMAIN:
+    WELL_KNOWN_URL = OIDC_DOMAIN.strip("/") + WELL_KNOWN_SCHEME
     well_known_values = requests.get(WELL_KNOWN_URL, timeout=2.0).json()
     if well_known_values:
         USERINFO_ENDPOINT = well_known_values['userinfo_endpoint']

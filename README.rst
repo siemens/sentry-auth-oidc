@@ -34,29 +34,29 @@ Finally, obtain the API keys and the well-known account URL and plug them into y
 
 .. code-block:: python
 
-    CLIENT_ID = ""
+    OIDC_CLIENT_ID = ""
 
-    CLIENT_SECRET = ""
+    OIDC_CLIENT_SECRET = ""
 
-    SCOPE = "openid email"
+    OIDC_SCOPE = "openid email"
 
-    WELL_KNOWN_URL = "https://accounts.google.com"  # e.g. for Google
+    OIDC_DOMAIN = "https://accounts.google.com"  # e.g. for Google
 
-The ``WELL_KNOWN_URL`` defines where the OIDC configuration is going to be pulled from.
+The ``OIDC_DOMAIN`` defines where the OIDC configuration is going to be pulled from.
 Basically it specifies the OIDC server and adds the path ``.well-known/openid-configuration`` to it.
 That's where different endpoint paths can be found.
 
 Detailed information can be found in the `ProviderConfig <https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`_ specification.
 
-If your provider doesn't support the ``WELL_KNOWN_URL``, then you have to set these
+If your provider doesn't support the ``OIDC_DOMAIN``, then you have to set these
 required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_endpoint, issuer).
 
 .. code-block:: python
 
-    AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"  # e.g. for Google
+    OIDC_AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"  # e.g. for Google
 
-    TOKEN_ENDPOINT = "https://www.googleapis.com/oauth2/v4/token"  # e.g. for Google
+    OIDC_TOKEN_ENDPOINT = "https://www.googleapis.com/oauth2/v4/token"  # e.g. for Google
 
-    USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
+    OIDC_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
 
-    ISSUER = "Google"
+    OIDC_ISSUER = "Google"
