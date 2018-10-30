@@ -7,7 +7,6 @@ with open('README.rst') as readme_file:
 
 install_requires = [
     'sentry>=7.0.0',
-    'python-gitlab>=1.5.1',
     'requests<2.19.0,>=2.18.4',
 ]
 
@@ -17,7 +16,7 @@ tests_require = [
 
 setup(
     name='sentry-auth-oidc',
-    version='1.0.1',
+    version='2.0.0',
     author='Max Wittig',
     author_email='max.wittig@siemens.com',
     url='https://www.getsentry.com',
