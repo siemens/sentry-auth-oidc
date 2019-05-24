@@ -25,7 +25,7 @@ env:
   - SENTRY_SKIP_BACKEND_VALIDATION=1
 before_install:
 - curl -o ~/.nvm/nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.34.0/nvm.sh
-- chmod +x nvm.sh
+- chmod +x ~/.nvm.sh
 - source ~/.nvm.sh
 - nvm install v10
 - nvm use v10
