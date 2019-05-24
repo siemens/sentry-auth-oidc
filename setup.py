@@ -7,7 +7,7 @@ with open('README.rst') as readme_file:
 
 install_requires = [
     'sentry>=7.0.0',
-    'requests<2.19.0,>=2.18.4',
+    'requests<3.0.0'
 ]
 
 tests_require = [
