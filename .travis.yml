@@ -6,6 +6,8 @@ services:
 - redis-server
 python:
 - '2.7'
+node_js:
+  - "8"
 cache:
   directories:
   - node_modules
