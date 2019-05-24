@@ -24,7 +24,11 @@ env:
   - PIP_DISABLE_PIP_VERSION_CHECK=on
   - SENTRY_SKIP_BACKEND_VALIDATION=1
 before_install:
-- npm install -g npm@latest
+- curl -o ~/.nvm/nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.34.0/nvm.sh
+- chmod +x nvm.sh
+- source ~/.nvm.sh
+- nvm install v10
+- nvm use v10
 - pip install codecov
 - pip install -U setuptools
 install:
