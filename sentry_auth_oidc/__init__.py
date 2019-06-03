@@ -4,4 +4,4 @@ from sentry.auth import register
 
 from .provider import OIDCProvider
 
-register('oidc', OIDCProvider)
+register("oidc", OIDCProvider)

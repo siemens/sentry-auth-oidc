@@ -24,7 +24,6 @@ test:
     - pip install codecov
     - make develop
   script:
-    - PYFLAKES_NODOCTEST=1 flake8
     - coverage run --source=. -m py.test tests
   except:
     - master

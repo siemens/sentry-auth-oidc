@@ -1,6 +1,9 @@
 OpenIDConnect Auth for Sentry
 =============================
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/python/black
+
 An SSO provider for Sentry which enables `OpenID Connect <http://openid.net/connect/>`_ Apps authentication.
 
 This is a fork of `sentry-auth-google <https://github.com/getsentry/sentry-auth-google/>`_.
