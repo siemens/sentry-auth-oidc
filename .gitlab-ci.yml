@@ -1,0 +1,39 @@
+image: python:2.7
+
+variables:
+  PIP_DOWNLOAD_CACHE: ".pip_download_cache"
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+  SENTRY_SKIP_BACKEND_VALIDATION: 1
+
+services:
+  - postgres:9.6
+  - memcached:1.5.16
+  - redis:5.0.5
+
+stages:
+  - test
+  - deploy
+
+test:
+  before_script:
+    - curl -o nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.34.0/nvm.sh
+    - chmod +x nvm.sh
+    - source nvm.sh
+    - nvm install v10
+    - nvm use v10
+    - pip install codecov
+    - make develop
+  script:
+    - PYFLAKES_NODOCTEST=1 flake8
+    - coverage run --source=. -m py.test tests
+  except:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - pip install -U pip setuptools wheel twine
+    - python setup.py sdist bdist_wheel
+    - twine upload --skip-existing -u $TWINE_USERNAME -p $TWINE_PASSWORD dist/*
+  only:
+    - tags
