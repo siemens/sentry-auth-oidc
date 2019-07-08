@@ -11,7 +11,7 @@ install_requires = [
 ]
 
 tests_require = [
-    'flake8>=3.5',
+    'flake8<3.6.0,>=3.5.0',
 ]
 
 setup(
