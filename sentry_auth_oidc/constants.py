@@ -3,14 +3,13 @@ from __future__ import absolute_import, print_function
 from django.conf import settings
 import requests
 
+
 AUTHORIZATION_ENDPOINT = getattr(settings, 'OIDC_AUTHORIZATION_ENDPOINT', None)
 TOKEN_ENDPOINT = getattr(settings, 'OIDC_TOKEN_ENDPOINT', None)
 CLIENT_ID = getattr(settings, 'OIDC_CLIENT_ID', None)
 CLIENT_SECRET = getattr(settings, 'OIDC_CLIENT_SECRET', None)
 USERINFO_ENDPOINT = getattr(settings, 'OIDC_USERINFO_ENDPOINT', None)
 SCOPE = getattr(settings, 'OIDC_SCOPE', 'openid email')
-ISSUER = getattr(settings, 'OIDC_ISSUER', None)
-
 WELL_KNOWN_SCHEME = "/.well-known/openid-configuration"
 ERR_INVALID_RESPONSE = 'Unable to fetch user information from provider.  Please check the log.'
 DATA_VERSION = '1'
@@ -24,3 +23,8 @@ if OIDC_DOMAIN:
         AUTHORIZATION_ENDPOINT = well_known_values['authorization_endpoint']
         TOKEN_ENDPOINT = well_known_values['token_endpoint']
         ISSUER = well_known_values['issuer']
+
+
+config_issuer = getattr(settings, 'OIDC_ISSUER', None)
+if config_issuer:
+    ISSUER = config_issuer
