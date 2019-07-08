@@ -7,6 +7,7 @@ from sentry.utils import json
 
 from .constants import (
     ERR_INVALID_RESPONSE,
+    ISSUER
 )
 from .utils import urlsafe_b64decode
 
@@ -59,7 +60,8 @@ class OIDCConfigureView(ConfigureView):
         else:
             domains = config.get('domains')
         return self.render('sentry_auth_oidc/configure.html', {
-            'domains': domains or [],
+            'provider_name': ISSUER or "",
+            'domains': domains or []
         })
 
 

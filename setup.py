@@ -11,12 +11,12 @@ install_requires = [
 ]
 
 tests_require = [
-    'flake8>=3.5',
+    'flake8<3.6.0,>=3.5.0',
 ]
 
 setup(
     name='sentry-auth-oidc',
-    version='2.0.0',
+    version='2.1.0',
     author='Max Wittig',
     author_email='max.wittig@siemens.com',
     url='https://www.getsentry.com',

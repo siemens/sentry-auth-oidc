@@ -60,3 +60,6 @@ required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_
     OIDC_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
 
     OIDC_ISSUER = "Google"
+
+.. note::
+You can also define `OIDC_ISSUER` to change the default provider name in the UI.
