@@ -48,6 +48,8 @@ That's where different endpoint paths can be found.
 
 Detailed information can be found in the `ProviderConfig <https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`_ specification.
 
+You can also define ``OIDC_ISSUER`` to change the default provider name in the UI, even when the ``OIDC_DOMAIN`` is set.
+
 If your provider doesn't support the ``OIDC_DOMAIN``, then you have to set these
 required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_endpoint, issuer).
 
@@ -60,6 +62,3 @@ required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_
     OIDC_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
 
     OIDC_ISSUER = "Google"
-
-.. note::
-You can also define `OIDC_ISSUER` to change the default provider name in the UI.
