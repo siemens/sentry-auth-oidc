@@ -6,7 +6,6 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 install_requires = [
-    'sentry>=7.0.0',
     'requests<3.0.0'
 ]
 
