@@ -15,7 +15,7 @@ tests_require = [
 
 setup(
     name='sentry-auth-oidc',
-    version='2.1.0',
+    version='3.0.0',
     author='Max Wittig',
     author_email='max.wittig@siemens.com',
     url='https://www.getsentry.com',
@@ -30,7 +30,7 @@ setup(
     include_package_data=True,
     entry_points={
         'sentry.apps': [
-            'sentry_auth_oidc = sentry_auth_oidc',
+            'oidc = oidc.apps.Config',
         ],
     },
     classifiers=[
