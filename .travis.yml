@@ -4,6 +4,12 @@ services:
 - memcached
 - postgresql
 - redis-server
+addons:
+  apt:
+    update: true
+    packages:
+      - libxmlsec1-dev
+      - libmaxminddb-dev
 python:
 - '2.7'
 cache:
