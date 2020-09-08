@@ -9,4 +9,4 @@ class Config(AppConfig):
         from sentry import auth
         from .provider import OIDCProvider
 
-        auth.register('oidc', OIDCProvider)
+        auth.register("oidc", OIDCProvider)
