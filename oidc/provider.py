@@ -91,11 +91,21 @@ class OIDCProvider(OAuth2Provider):
     def get_user_info(self, bearer_token):
         endpoint = USERINFO_ENDPOINT
         bearer_auth = "Bearer " + bearer_token
-        return requests.get(
-            endpoint + "?schema=openid",
-            headers={"Authorization": bearer_auth},
-            timeout=2.0,
-        ).json()
+        retry_codes = [429, 500, 502, 503, 504]
+        for retry in range(10):
+            if 10 < retry:
+                return {}
+            r = requests.get(
+                endpoint + "?schema=openid",
+                headers={"Authorization": bearer_auth},
+                timeout=2.0,
+            )
+            if r.status_code in retry_codes:
+                wait_time = 2 ** retry * 0.1
+                time.sleep(wait_time)
+                continue
+            return r.json()
+
 
     def build_identity(self, state):
         data = state["data"]
