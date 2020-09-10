@@ -2,8 +2,9 @@ from __future__ import absolute_import, print_function
 
 import requests
 
-from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Provider, OAuth2Login
 from sentry.auth.provider import MigratingIdentityId
+from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Provider, OAuth2Login
+
 from .constants import (
     AUTHORIZATION_ENDPOINT,
     USERINFO_ENDPOINT,
@@ -15,9 +16,7 @@ from .constants import (
     DATA_VERSION,
 )
 from .views import FetchUser, OIDCConfigureView
-import logging
-
-logger = logging.getLogger("sentry.auth.oidc")
+import time
 
 
 class OIDCLogin(OAuth2Login):
@@ -106,16 +105,12 @@ class OIDCProvider(OAuth2Provider):
                 continue
             return r.json()
 
-
     def build_identity(self, state):
         data = state["data"]
+        user_data = state["user"]
+
         bearer_token = data["access_token"]
         user_info = self.get_user_info(bearer_token)
-        if not user_info.get("email"):
-            logger.error("Missing email in user endpoint: %s" % data)
-
-        user_data = state["user"]
-        data = state["data"]
 
         # XXX(epurkhiser): We initially were using the email as the id key.
         # This caused account dupes on domain changes. Migrate to the
@@ -125,7 +120,7 @@ class OIDCProvider(OAuth2Provider):
         return {
             "id": user_id,
             "email": user_info.get("email"),
-            "email_verified": user_info.get("email_verified"),
             "name": user_info.get("name"),
             "data": self.get_oauth_data(data),
+            "email_verified": user_info.get("email_verified"),
         }
