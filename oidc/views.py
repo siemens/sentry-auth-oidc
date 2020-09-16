@@ -5,11 +5,15 @@ import logging
 from sentry.auth.view import AuthView, ConfigureView
 from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
+from six.moves import map as _map
 
 from .constants import ERR_INVALID_RESPONSE, ISSUER
-from sentry.utils.compat import map
 
 logger = logging.getLogger("sentry.auth.oidc")
+
+
+def map(a, b, *c):
+    return list(_map(a, b, *c))
 
 
 class FetchUser(AuthView):
