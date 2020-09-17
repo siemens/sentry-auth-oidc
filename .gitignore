@@ -3,3 +3,5 @@
 *.eggs
 /dist
 /build
+venv
+.venv
