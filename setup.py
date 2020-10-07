@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-install_requires = ["requests<3.0.0", "six>=1.15.0"]
+install_requires = ["requests<3.0.0", "six<1.12.0,>=1.11.0"]
 
 tests_require = [
     "flake8<3.6.0,>=3.5.0",
