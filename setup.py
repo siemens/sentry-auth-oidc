@@ -13,7 +13,7 @@ tests_require = [
 
 setup(
     name="sentry-auth-oidc",
-    version="4.0.0",
+    version="4.0.1",
     author="Max Wittig",
     author_email="max.wittig@siemens.com",
     url="https://www.getsentry.com",
