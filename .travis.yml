@@ -11,7 +11,7 @@ addons:
       - libxmlsec1-dev
       - libmaxminddb-dev
 python:
-- '2.7'
+- '3.6'
 cache:
   directories:
   - node_modules
@@ -35,8 +35,8 @@ before_install:
 - source nvm.sh
 - nvm install v10
 - nvm use v10
-- pip install codecov
-- pip install -U setuptools
+- pip3 install codecov
+- pip3 install -U setuptools
 install:
 - make develop
 script:

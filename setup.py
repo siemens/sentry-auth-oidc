@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme_file:
@@ -13,7 +12,7 @@ tests_require = [
 
 setup(
     name="sentry-auth-oidc",
-    version="4.0.1",
+    version="5.0.0",
     author="Max Wittig",
     author_email="max.wittig@siemens.com",
     url="https://www.getsentry.com",
