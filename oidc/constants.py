@@ -1,8 +1,5 @@
-from __future__ import absolute_import, print_function
-
-from django.conf import settings
 import requests
-
+from django.conf import settings
 
 AUTHORIZATION_ENDPOINT = getattr(settings, "OIDC_AUTHORIZATION_ENDPOINT", None)
 TOKEN_ENDPOINT = getattr(settings, "OIDC_TOKEN_ENDPOINT", None)

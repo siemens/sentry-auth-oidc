@@ -1,14 +1,10 @@
-from __future__ import absolute_import
-
 import pytest
-
+from oidc.constants import DATA_VERSION
+from oidc.provider import OIDCProvider
+from sentry import auth
 from sentry.auth.exceptions import IdentityNotValid
 from sentry.models import AuthIdentity, AuthProvider
 from sentry.testutils import TestCase
-from sentry import auth
-from oidc.provider import OIDCProvider
-
-from oidc.constants import DATA_VERSION
 
 
 class OIDCProviderTest(TestCase):
