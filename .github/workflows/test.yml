@@ -1,0 +1,69 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  PY_COLORS: 1
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+      - uses: psf/black@stable
+        with:
+          args: "--check ."
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v3
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      memcached:
+        image: memcached:1.5-alpine
+        ports:
+          - 11211:11211
+      redis:
+        image: redis:5.0-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+      - uses: abatilo/actions-poetry@v2.0.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: |
+          sudo apt-get update && sudo apt-get install -y libxmlsec1-dev libmaxminddb-dev
+          pip3 install -U wheel
+          make develop
+          make test

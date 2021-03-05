@@ -1,22 +1,20 @@
-from __future__ import absolute_import, print_function
+import time
 
 import requests
-
 from sentry.auth.provider import MigratingIdentityId
-from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Provider, OAuth2Login
+from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Login, OAuth2Provider
 
 from .constants import (
     AUTHORIZATION_ENDPOINT,
-    USERINFO_ENDPOINT,
-    ISSUER,
-    TOKEN_ENDPOINT,
-    CLIENT_SECRET,
     CLIENT_ID,
-    SCOPE,
+    CLIENT_SECRET,
     DATA_VERSION,
+    ISSUER,
+    SCOPE,
+    TOKEN_ENDPOINT,
+    USERINFO_ENDPOINT,
 )
 from .views import FetchUser, OIDCConfigureView
-import time
 
 
 class OIDCLogin(OAuth2Login):
@@ -26,10 +24,10 @@ class OIDCLogin(OAuth2Login):
 
     def __init__(self, client_id, domains=None):
         self.domains = domains
-        super(OIDCLogin, self).__init__(client_id=client_id)
+        super().__init__(client_id=client_id)
 
     def get_authorize_params(self, state, redirect_uri):
-        params = super(OIDCLogin, self).get_authorize_params(state, redirect_uri)
+        params = super().get_authorize_params(state, redirect_uri)
         # TODO(dcramer): ideally we could look at the current resulting state
         # when an existing auth happens, and if they're missing a refresh_token
         # we should re-prompt them a second time with ``approval_prompt=force``
@@ -59,7 +57,7 @@ class OIDCProvider(OAuth2Provider):
         else:
             version = None
         self.version = version
-        super(OIDCProvider, self).__init__(**config)
+        super().__init__(**config)
 
     def get_configure_view(self):
         return OIDCConfigureView.as_view()

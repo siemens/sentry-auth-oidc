@@ -1,3 +1,0 @@
-include setup.py package.json webpack.config.js README.rst MANIFEST.in LICENSE AUTHORS
-recursive-include oidc/templates *
-global-exclude *~

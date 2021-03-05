@@ -1,0 +1,23 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  PY_COLORS: 1
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+      - uses: abatilo/actions-poetry@v2.0.0
+      - name: Publish package
+        run: |
+          poetry install -n --no-dev
+          poetry publish --build -u __token__ -p ${{ secrets.PYPI_SECRET }}
