@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sentry-auth-oidc"
-version = "5.0.2"
+version = "5.0.0"
 description = "OpenID Connect authentication provider for Sentry"
 authors = ["Max Wittig <max.wittig@siemens.com>"]
 license = "Apache 2.0"
@@ -17,7 +17,6 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-requests = "*"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

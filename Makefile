@@ -1,4 +1,4 @@
-.PHONY: clean develop publish test
+.PHONY: clean develop test
 
 develop:
 	pip3 install -e git+https://github.com/getsentry/sentry.git#egg=sentry[dev]
@@ -11,10 +11,6 @@ test:
 	@echo "--> Running Python tests"
 	pytest tests || exit 1
 	@echo ""
-
-publish:
-	poetry install -n --no-dev
-	poetry publish -n
 
 clean:
 	rm -rf *.egg-info src/*.egg-info
