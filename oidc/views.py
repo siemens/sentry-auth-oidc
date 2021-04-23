@@ -12,7 +12,7 @@ from sentry.organizations.services.organization.model import RpcOrganization
 from sentry.plugins.base.response import DeferredResponse
 from sentry.utils.signing import urlsafe_b64decode
 
-from .constants import ERR_INVALID_RESPONSE, ISSUER
+from .constants import ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN
 
 logger = logging.getLogger("sentry.auth.oidc")
 
@@ -53,6 +53,15 @@ class FetchUser(AuthView):
             domain = extract_domain(payload["email"])
         else:
             domain = payload.get("hd")
+
+        if domain is None:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
+
+        if domain in OIDC_DOMAIN_BLOCKLIST:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
+
+        if OIDC_DOMAIN_ALLOWLIST != set() and domain not in OIDC_DOMAIN_ALLOWLIST:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
 
         helper.bind_state("domain", domain)
         helper.bind_state("user", payload)
