@@ -12,8 +12,9 @@ from sentry.organizations.services.organization.model import RpcOrganization
 from sentry.plugins.base.response import DeferredResponse
 from sentry.utils.signing import urlsafe_b64decode
 
-from .constants import ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN
-
+from .constants import (
+    ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN, OIDC_DOMAIN_ALLOWLIST, OIDC_DOMAIN_BLOCKLIST,
+)
 logger = logging.getLogger("sentry.auth.oidc")
 
 
