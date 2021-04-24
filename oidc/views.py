@@ -53,7 +53,7 @@ class FetchUser(AuthView):
         if self.version is None:
             domain = extract_domain(payload["email"])
         else:
-            domain = payload.get("hd")
+            domain = payload.get("hd", extract_domain(payload["email"]))
 
         if domain is None:
             return helper.error(ERR_INVALID_DOMAIN % (domain,))
