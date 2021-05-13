@@ -50,10 +50,11 @@ class FetchUser(AuthView):
             return helper.error(ERR_INVALID_RESPONSE)
 
         # support legacy style domains with pure domain regexp
+        user_domain = extract_domain(payload["email"])
         if self.version is None:
-            domain = extract_domain(payload["email"])
+            domain = user_domain
         else:
-            domain = payload.get("hd", extract_domain(payload["email"]))
+            domain = payload.get("hd", user_domain)
 
         if domain is None:
             return helper.error(ERR_INVALID_DOMAIN % (domain,))
