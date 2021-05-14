@@ -62,7 +62,7 @@ class FetchUser(AuthView):
         if domain in OIDC_DOMAIN_BLOCKLIST:
             return helper.error(ERR_INVALID_DOMAIN % (domain,))
 
-        if OIDC_DOMAIN_ALLOWLIST != set() and domain not in OIDC_DOMAIN_ALLOWLIST:
+        if OIDC_DOMAIN_ALLOWLIST and domain not in OIDC_DOMAIN_ALLOWLIST:
             return helper.error(ERR_INVALID_DOMAIN % (domain,))
 
         helper.bind_state("domain", domain)
