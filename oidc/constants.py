@@ -29,3 +29,5 @@ if OIDC_DOMAIN:
 config_issuer = getattr(settings, "OIDC_ISSUER", None)
 if config_issuer:
     ISSUER = config_issuer
+
+ORGS_SLUG_REGEX = getattr(settings, "OIDC_ORGS_SLUG_REGEX", ".*")

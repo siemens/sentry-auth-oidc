@@ -3,6 +3,7 @@ from typing import Union
 from bs4 import BeautifulSoup, Tag
 from logging import debug, info, error
 from sentry.models import Organization, AuthProvider
+from .constants import ORGS_SLUG_REGEX
 
 
 class PatchLoginPage:
@@ -41,6 +42,7 @@ class PatchLoginPage:
                 _auth_container.append(_auth_provider_column)
             #
             _orgs = Organization.objects.filter(
+                slug__regex=ORGS_SLUG_REGEX,
                 id__in=(AuthProvider.objects.filter(provider='oidc')
                                             .values('organization_id')))
             for org in _orgs:
