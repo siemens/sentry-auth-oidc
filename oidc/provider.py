@@ -98,7 +98,7 @@ class OIDCProvider(OAuth2Provider):
                 timeout=2.0,
             )
             if r.status_code in retry_codes:
-                wait_time = 2 ** retry * 0.1
+                wait_time = 2**retry * 0.1
                 time.sleep(wait_time)
                 continue
             return r.json()

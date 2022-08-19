@@ -2,7 +2,6 @@ import logging
 
 from sentry.auth.view import AuthView, ConfigureView
 from sentry.utils import json
-from sentry.utils.compat import map
 from sentry.utils.signing import urlsafe_b64decode
 
 from .constants import ERR_INVALID_RESPONSE, ISSUER
