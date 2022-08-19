@@ -2,8 +2,8 @@ name: Publish
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - '*'
 
 env:
   PY_COLORS: 1
