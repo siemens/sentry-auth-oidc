@@ -21,7 +21,7 @@ jobs:
           python-version: "3.8"
       - uses: psf/black@stable
         with:
-          black_args: "--check ."
+          options: "--check ."
   commitlint:
     runs-on: ubuntu-latest
     steps:
@@ -58,9 +58,11 @@ jobs:
         with:
           python-version: "3.8"
       - uses: abatilo/actions-poetry@v2.0.0
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
+      - name: Setup required upstream yarn version
+        run: yarn set version 1.22.5
       - run: |
           sudo apt-get update && sudo apt-get install -y libxmlsec1-dev libmaxminddb-dev
           pip3 install -U wheel
