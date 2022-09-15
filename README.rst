@@ -62,3 +62,20 @@ required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_
     OIDC_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
 
     OIDC_ISSUER = "Google"
+
+Development
+-----------
+
+FAQ
+~~~~~
+
+- If you are using macOS brew's openssl and you get a psycopg build error such as:
+    ::
+
+      ld: library not found for -lssl
+
+  Please setup the following environment variables:
+    .. code-block:: bash
+
+      export LDFLAGS="-L/usr/local/opt/openssl/lib"
+      export CPPFLAGS="-I/usr/local/opt/openssl/include"
