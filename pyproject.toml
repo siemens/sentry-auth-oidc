@@ -21,7 +21,7 @@ python = "^3.8"
 [tool.poetry.dev-dependencies]
 black = "^22.8.0"
 isort = "^5.11.4"
-flake8 = "^3.8.4"
+flake8 = "^5.0.4"
 codecov = "^2.1.12"
 pytest = "^7.2.1"
 
