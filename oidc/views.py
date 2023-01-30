@@ -1,8 +1,12 @@
 import logging
+import requests
 
 from sentry.auth.view import AuthView, ConfigureView
 from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
+from .constants import (
+    USERINFO_ENDPOINT,
+)
 
 from .constants import ERR_INVALID_RESPONSE, ISSUER
 
@@ -15,30 +19,34 @@ class FetchUser(AuthView):
         self.version = version
         super().__init__(*args, **kwargs)
 
+    def get_user_info(self, bearer_token):
+        endpoint = USERINFO_ENDPOINT
+        bearer_auth = "Bearer " + bearer_token
+        retry_codes = [429, 500, 502, 503, 504]
+        for retry in range(10):
+            if 10 < retry:
+                return {}
+            r = requests.get(
+                endpoint + "?schema=openid",
+                headers={"Authorization": bearer_auth},
+                timeout=2.0,
+            )
+            if r.status_code in retry_codes:
+                wait_time = 2**retry * 0.1
+                time.sleep(wait_time)
+                continue
+            return r.json()
+
     def dispatch(self, request, helper):
         data = helper.fetch_state("data")
 
         try:
-            id_token = data["id_token"]
+            access_token = data["access_token"]
         except KeyError:
-            logger.error("Missing id_token in OAuth response: %s" % data)
+            logger.error("Missing access_token in OAuth response: %s" % data)
             return helper.error(ERR_INVALID_RESPONSE)
 
-        try:
-            _, payload, _ = map(urlsafe_b64decode, id_token.split(".", 2))
-        except Exception as exc:
-            logger.error("Unable to decode id_token: %s" % exc, exc_info=True)
-            return helper.error(ERR_INVALID_RESPONSE)
-
-        try:
-            payload = json.loads(payload)
-        except Exception as exc:
-            logger.error("Unable to decode id_token payload: %s" % exc, exc_info=True)
-            return helper.error(ERR_INVALID_RESPONSE)
-
-        if not payload.get("email"):
-            logger.error("Missing email in id_token payload: %s" % id_token)
-            return helper.error(ERR_INVALID_RESPONSE)
+        payload = self.get_user_info(access_token)
 
         # support legacy style domains with pure domain regexp
         if self.version is None:
