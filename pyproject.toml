@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "sentry-auth-oidc"
-version = "7.0.0"
+version = "8.0.0"
 description = "OpenID Connect authentication provider for Sentry"
-authors = ["Max Wittig <max.wittig@siemens.com>"]
+authors = ["Max Wittig <max.wittig@siemens.com>, Diego Louzán <diego.louzan.ext@siemens.com>"]
 license = "Apache 2.0"
 readme = "README.rst"
 classifiers = [
@@ -16,7 +16,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 black = "^22.8.0"
