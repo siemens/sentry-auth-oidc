@@ -2,55 +2,48 @@ import pytest
 from sentry import auth
 from sentry.auth.exceptions import IdentityNotValid
 from sentry.models import AuthIdentity, AuthProvider
-from sentry.testutils import TestCase
+from sentry.testutils.cases import TestCase
+from sentry.testutils.silo import control_silo_test
 
 from oidc.constants import DATA_VERSION
 from oidc.provider import OIDCProvider
 
 
+@control_silo_test
 class OIDCProviderTest(TestCase):
     def setUp(self):
-        self.user = self.create_user("foo@example.com")
-        self.org = self.create_organization(owner=self.user)
-        self.auth_provider = AuthProvider.objects.create(
-            provider="oidc",
-            organization=self.org,
+        self.auth_provider_inst = AuthProvider.objects.create(
+            provider="oidc", organization_id=self.organization.id
         )
         auth.register("oidc", OIDCProvider)
-        super(OIDCProviderTest, self).setUp()
+        super().setUp()
 
     def test_refresh_identity_without_refresh_token(self):
         auth_identity = AuthIdentity.objects.create(
-            auth_provider=self.auth_provider,
+            auth_provider=self.auth_provider_inst,
             user=self.user,
-            data={
-                "access_token": "access_token",
-            },
+            data={"access_token": "access_token"},
         )
 
-        provider = self.auth_provider.get_provider()
+        provider = self.auth_provider_inst.get_provider()
 
         with pytest.raises(IdentityNotValid):
             provider.refresh_identity(auth_identity)
 
     def test_handles_multiple_domains(self):
-        self.auth_provider.update(
-            config={"domains": ["example.com"]},
-        )
+        self.auth_provider_inst.update(config={"domains": ["example.com"]})
 
-        provider = self.auth_provider.get_provider()
+        provider = self.auth_provider_inst.get_provider()
         assert provider.domains == ["example.com"]
 
     def test_handles_legacy_single_domain(self):
-        self.auth_provider.update(
-            config={"domain": "example.com"},
-        )
+        self.auth_provider_inst.update(config={"domain": "example.com"})
 
-        provider = self.auth_provider.get_provider()
+        provider = self.auth_provider_inst.get_provider()
         assert provider.domains == ["example.com"]
 
     def test_build_config(self):
-        provider = self.auth_provider.get_provider()
+        provider = self.auth_provider_inst.get_provider()
         state = {
             "domain": "example.com",
             "user": {
@@ -67,7 +60,4 @@ class OIDCProviderTest(TestCase):
             },
         }
         result = provider.build_config(state)
-        assert result == {
-            "domains": ["example.com"],
-            "version": DATA_VERSION,
-        }
+        assert result == {"domains": ["example.com"], "version": DATA_VERSION}

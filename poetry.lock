@@ -26,7 +26,6 @@ click = ">=8.0.0"
 mypy-extensions = ">=0.4.3"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
-tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
 
 [package.extras]
 colorama = ["colorama (>=0.4.3)"]
@@ -249,18 +248,23 @@ files = [
 toml = ["tomli"]
 
 [[package]]
-name = "exceptiongroup"
-version = "1.2.0"
-description = "Backport of PEP 654 (exception groups)"
+name = "fixtures"
+version = "4.1.0"
+description = "Fixtures, reusable state for writing clean tests and more."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.2.0-py3-none-any.whl", hash = "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14"},
-    {file = "exceptiongroup-1.2.0.tar.gz", hash = "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"},
+    {file = "fixtures-4.1.0-py3-none-any.whl", hash = "sha256:a43a55da406c37651aa86dd1ba6c3983a09d36d60fe5f72242872c8a4eeeb710"},
+    {file = "fixtures-4.1.0.tar.gz", hash = "sha256:82b1c5e69f615526ef6c067188a1e6c6067df7f88332509c99f8b8fdbb9776f3"},
 ]
 
+[package.dependencies]
+pbr = ">=5.7.0"
+
 [package.extras]
-test = ["pytest (>=6)"]
+docs = ["docutils"]
+streams = ["testtools"]
+test = ["mock", "testtools"]
 
 [[package]]
 name = "flake8"
@@ -359,6 +363,17 @@ files = [
 ]
 
 [[package]]
+name = "pbr"
+version = "6.0.0"
+description = "Python Build Reasonableness"
+optional = false
+python-versions = ">=2.6"
+files = [
+    {file = "pbr-6.0.0-py2.py3-none-any.whl", hash = "sha256:4a7317d5e3b17a3dccb6a8cfe67dab65b20551404c52c8ed41279fa4f0cb4cda"},
+    {file = "pbr-6.0.0.tar.gz", hash = "sha256:d1377122a5a00e2f940ee482999518efe16d745d423a670c27773dfbc3c9a7d9"},
+]
+
+[[package]]
 name = "platformdirs"
 version = "4.2.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -423,11 +438,9 @@ files = [
 
 [package.dependencies]
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
-exceptiongroup = {version = ">=1.0.0rc8", markers = "python_version < \"3.11\""}
 iniconfig = "*"
 packaging = "*"
 pluggy = ">=0.12,<2.0"
-tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
@@ -454,15 +467,19 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
-name = "tomli"
-version = "2.0.1"
-description = "A lil' TOML parser"
+name = "sentry"
+version = "24.2.0"
+description = "A realtime logging and aggregation server."
 optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
-    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
-]
+python-versions = ">=3.8"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/getsentry/sentry.git"
+reference = "24.2.0"
+resolved_reference = "cfcff1f4fda857dcddc9401efb689b6af92a3214"
 
 [[package]]
 name = "urllib3"
@@ -483,5 +500,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.10"
-content-hash = "02daee215ddae2f6a8a3bdce83fb30a7af8cb83d332b3ea77aec1895fe03685e"
+python-versions = "^3.11"
+content-hash = "44f9daad82de055130ebbee3c77ee3a0862d0cbd7ebee2b663b15a41f08f8957"
