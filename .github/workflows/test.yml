@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.11"
       - uses: psf/black@stable
         with:
           options: "--check ."
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14.5
+        image: postgres:14.11
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
         # Set health checks to wait until postgres has started
@@ -45,28 +45,26 @@ jobs:
         ports:
           - 5432:5432
       memcached:
-        image: memcached:1.6.21-alpine
+        image: memcached:1.6.23-alpine
         ports:
           - 11211:11211
       redis:
-        image: redis:6.2.12-alpine
+        image: redis:6.2.14-alpine
         ports:
           - 6379:6379
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.11"
       - uses: abatilo/actions-poetry@v2
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
       - name: Setup required upstream yarn version
-        run: yarn set version 1.22.5
+        run: yarn set version 1.22.21
       - run: |
           sudo apt-get update && sudo apt-get install -y libxmlsec1-dev libmaxminddb-dev
-          python3 -m venv venv
-          . venv/bin/activate
-          venv/bin/pip3 install -U wheel
-          make develop
-          make test
+          poetry install --with test
+          make deps
+          poetry run pytest

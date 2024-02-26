@@ -1,17 +1,17 @@
-SENTRY_VERSION := 22.8.0
+SENTRY_VERSION := 24.2.0
 
-.PHONY: clean develop test
+.PHONY: clean deps
 
-develop:
-	pip3 install -e git+https://github.com/getsentry/sentry.git@$(SENTRY_VERSION)#egg=sentry[dev]
-	poetry install -n --no-dev
-	poetry build && pip3 install -U dist/*.whl
-	pip3 install -U codecov pytest freezegun fixtures
-
-test:
-	@echo "--> Running Python tests"
-	python -m pytest tests || exit 1
-	@echo ""
+# Upstream no longer tracks its own dependencies in the package as dev extras,
+# so we cannot resolve them here as transitive dependencies. Instead we fetch
+# their locked development dependencies.
+# Likewise, their root-level conftest is not provided as a pytest plugin for
+# use outside their own tests, but we need their fixtures. We fetch them into
+# our own namespace here.
+deps:
+	curl -L -o requirements-sentry.txt https://github.com/getsentry/sentry/raw/$(SENTRY_VERSION)/requirements-dev-frozen.txt
+	curl -L -o tests/conftest.py https://github.com/getsentry/sentry/raw/$(SENTRY_VERSION)/tests/conftest.py
+	poetry run pip install -r requirements-sentry.txt
 
 clean:
 	rm -rf *.egg-info src/*.egg-info

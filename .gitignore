@@ -7,3 +7,6 @@ venv
 .venv
 .coverage
 .vscode/
+# Fetched from upstream
+requirements-sentry.txt
+tests/conftest.py

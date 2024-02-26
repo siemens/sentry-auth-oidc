@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:14.11
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # Set health checks to wait until postgres has started
+    healthcheck:
+      test: ["CMD-SHELL", “pg_isready”]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+  memcached:
+    image: memcached:1.6.23-alpine
+    ports:
+      - 11211:11211
+  redis:
+    image: redis:6.2.14-alpine
+    ports:
+      - 6379:6379

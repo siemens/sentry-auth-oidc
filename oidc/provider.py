@@ -68,26 +68,20 @@ class OIDCProvider(OAuth2Provider):
 
     def get_auth_pipeline(self):
         return [
-            OIDCLogin(self.get_client_id(), domains=self.domains),
+            OIDCLogin(domains=self.domains, client_id=self.get_client_id()),
             OAuth2Callback(
                 access_token_url=TOKEN_ENDPOINT,
                 client_id=self.get_client_id(),
                 client_secret=self.get_client_secret(),
             ),
-            FetchUser(
-                domains=self.domains,
-                version=self.version,
-            ),
+            FetchUser(domains=self.domains, version=self.version),
         ]
 
     def get_refresh_token_url(self):
         return TOKEN_ENDPOINT
 
     def build_config(self, state):
-        return {
-            "domains": [state["domain"]],
-            "version": DATA_VERSION,
-        }
+        return {"domains": [state["domain"]], "version": DATA_VERSION}
 
     def get_user_info(self, bearer_token):
         endpoint = USERINFO_ENDPOINT
