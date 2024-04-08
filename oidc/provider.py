@@ -93,7 +93,7 @@ class OIDCProvider(OAuth2Provider):
             r = requests.get(
                 endpoint + "?schema=openid",
                 headers={"Authorization": bearer_auth},
-                timeout=2.0,
+                timeout=20.0,
             )
             if r.status_code in retry_codes:
                 wait_time = 2**retry * 0.1
