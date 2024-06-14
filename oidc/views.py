@@ -4,8 +4,9 @@ from sentry.auth.view import AuthView, ConfigureView
 from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
 
-from .constants import ERR_INVALID_RESPONSE, ISSUER
-
+from .constants import (
+    ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN, OIDC_DOMAIN_ALLOWLIST, OIDC_DOMAIN_BLOCKLIST,
+)
 logger = logging.getLogger("sentry.auth.oidc")
 
 
@@ -41,10 +42,20 @@ class FetchUser(AuthView):
             return helper.error(ERR_INVALID_RESPONSE)
 
         # support legacy style domains with pure domain regexp
+        user_domain = extract_domain(payload["email"])
         if self.version is None:
-            domain = extract_domain(payload["email"])
+            domain = user_domain
         else:
-            domain = payload.get("hd")
+            domain = payload.get("hd", user_domain)
+
+        if domain is None:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
+
+        if domain in OIDC_DOMAIN_BLOCKLIST:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
+
+        if OIDC_DOMAIN_ALLOWLIST and domain not in OIDC_DOMAIN_ALLOWLIST:
+            return helper.error(ERR_INVALID_DOMAIN % (domain,))
 
         helper.bind_state("domain", domain)
         helper.bind_state("user", payload)
