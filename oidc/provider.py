@@ -14,7 +14,7 @@ from .constants import (
     TOKEN_ENDPOINT,
     USERINFO_ENDPOINT,
 )
-from .views import FetchUser, OIDCConfigureView
+from .views import FetchUser, oidc_configure_view
 
 
 class OIDCLogin(OAuth2Login):
@@ -64,7 +64,7 @@ class OIDCProvider(OAuth2Provider):
         return CLIENT_SECRET
 
     def get_configure_view(self):
-        return OIDCConfigureView.as_view()
+        return oidc_configure_view
 
     def get_auth_pipeline(self):
         return [
