@@ -70,8 +70,7 @@ def oidc_configure_view(
     else:
         domains = config.get("domains")
     return DeferredResponse(
-        "oidc/configure.html",
-        {"provider_name": ISSUER or "", "domains": domains or []}
+        "oidc/configure.html", {"provider_name": ISSUER or "", "domains": domains or []}
     )
 
 
