@@ -46,7 +46,7 @@ class OIDCLogin(OAuth2Login):
 
 
 class OIDCProvider(OAuth2Provider):
-    name = ISSUER if ISSUER else "oidc"
+    name = ISSUER
 
     def __init__(self, domain=None, domains=None, version=None, **config):
         if domain:
