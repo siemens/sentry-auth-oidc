@@ -1,0 +1,5 @@
+[submodule "deps/sentry"]
+	path = deps/sentry
+	url = https://github.com/getsentry/sentry.git
+	# This is here for renovate
+	branch = 24.8.0
