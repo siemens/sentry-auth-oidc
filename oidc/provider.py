@@ -1,8 +1,17 @@
+from __future__ import annotations
+
+from collections.abc import Callable
+
+from django.http import HttpRequest
+
 import time
 
 import requests
 from sentry.auth.provider import MigratingIdentityId
 from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Login, OAuth2Provider
+from sentry.auth.services.auth.model import RpcAuthProvider
+from sentry.organizations.services.organization.model import RpcOrganization
+from sentry.plugins.base.response import DeferredResponse
 
 from .constants import (
     AUTHORIZATION_ENDPOINT,
@@ -14,7 +23,7 @@ from .constants import (
     TOKEN_ENDPOINT,
     USERINFO_ENDPOINT,
 )
-from .views import FetchUser, OIDCConfigureView
+from .views import FetchUser, oidc_configure_view
 
 
 class OIDCLogin(OAuth2Login):
@@ -63,8 +72,10 @@ class OIDCProvider(OAuth2Provider):
     def get_client_secret(self):
         return CLIENT_SECRET
 
-    def get_configure_view(self):
-        return OIDCConfigureView.as_view()
+    def get_configure_view(
+        self,
+    ) -> Callable[[HttpRequest, RpcOrganization, RpcAuthProvider], DeferredResponse]:
+        return oidc_configure_view
 
     def get_auth_pipeline(self):
         return [
