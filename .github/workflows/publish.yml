@@ -11,13 +11,15 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
       - uses: abatilo/actions-poetry@v2
-      - name: Publish package
-        run: |
-          poetry install -n --no-dev
-          poetry publish --build -u __token__ -p ${{ secrets.PYPI_SECRET }}
+      - name: Build package
+        run: poetry build
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
