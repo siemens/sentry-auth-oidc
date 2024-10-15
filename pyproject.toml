@@ -26,7 +26,7 @@ extend-exclude = "deps"
 python = "^3.11"
 
 [tool.poetry.dev-dependencies]
-black = "^22.8.0"
+black = "^24.3.0"
 isort = "^5.7.0"
 flake8 = "^3.8.4"
 
