@@ -23,30 +23,41 @@ class FetchUser(AuthView):
         self.version = version
         super().__init__(*args, **kwargs)
 
-    def dispatch(self, request: HttpRequest, helper) -> Response:  # type: ignore
-        data = helper.fetch_state("data")
+    def dispatch(self, request: HttpRequest, **kwargs) -> Response:  # type: ignore
+        # Until Sentry 25.6.0, the second argument to this function was called `helper`
+        # and was then renamed to `pipeline`.
+        if "pipeline" in kwargs:
+            pipeline = kwargs["pipeline"]
+        elif "helper" in kwargs:
+            pipeline = kwargs["helper"]
+        else:
+            raise TypeError(
+                f"FetchUser.dispatch() is missing either the `pipeline` or the `helper` keyword argument."
+            )
+
+        data = pipeline.fetch_state("data")
 
         try:
             id_token = data["id_token"]
         except KeyError:
             logger.error("Missing id_token in OAuth response: %s" % data)
-            return helper.error(ERR_INVALID_RESPONSE)
+            return pipeline.error(ERR_INVALID_RESPONSE)
 
         try:
             _, payload, _ = map(urlsafe_b64decode, id_token.split(".", 2))
         except Exception as exc:
             logger.error("Unable to decode id_token: %s" % exc, exc_info=True)
-            return helper.error(ERR_INVALID_RESPONSE)
+            return pipeline.error(ERR_INVALID_RESPONSE)
 
         try:
             payload = json.loads(payload)
         except Exception as exc:
             logger.error("Unable to decode id_token payload: %s" % exc, exc_info=True)
-            return helper.error(ERR_INVALID_RESPONSE)
+            return pipeline.error(ERR_INVALID_RESPONSE)
 
         if not payload.get("email"):
             logger.error("Missing email in id_token payload: %s" % id_token)
-            return helper.error(ERR_INVALID_RESPONSE)
+            return pipeline.error(ERR_INVALID_RESPONSE)
 
         # support legacy style domains with pure domain regexp
         if self.version is None:
@@ -54,10 +65,10 @@ class FetchUser(AuthView):
         else:
             domain = payload.get("hd")
 
-        helper.bind_state("domain", domain)
-        helper.bind_state("user", payload)
+        pipeline.bind_state("domain", domain)
+        pipeline.bind_state("user", payload)
 
-        return helper.next_step()
+        return pipeline.next_step()
 
 
 def oidc_configure_view(
