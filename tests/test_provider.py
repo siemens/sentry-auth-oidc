@@ -15,7 +15,7 @@ class OIDCProviderTest(TestCase):
         self.auth_provider_inst = AuthProvider.objects.create(
             provider="oidc", organization_id=self.organization.id
         )
-        auth.register("oidc", OIDCProvider)
+        auth.register(OIDCProvider)
         super().setUp()
 
     def test_refresh_identity_without_refresh_token(self):
