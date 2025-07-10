@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sentry-auth-oidc"
-version = "9.0.1"
+version = "9.1.0"
 description = "OpenID Connect authentication provider for Sentry"
 authors = [
     "Max Wittig <max.wittig@siemens.com>",
