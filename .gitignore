@@ -9,3 +9,4 @@ venv
 .vscode/
 # Fetched from upstream
 tests/conftest.py
+.python-version
