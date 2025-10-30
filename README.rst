@@ -82,6 +82,8 @@ Alternatively, if you use the default ``OIDC_PROVIDER_NAME = "OIDC"``, the CSS c
         background-image: url('/path/to/your/icon.svg');
     }
 
+An example OIDC icon SVG is provided in the ``examples/`` directory of this repository. See ``examples/README.md`` for more details on how to use it.
+
 If your provider doesn't support the ``OIDC_DOMAIN``, then you have to set these
 required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_endpoint, issuer).
 
