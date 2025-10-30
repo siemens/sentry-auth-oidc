@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is an OpenID Connect (OIDC) authentication provider plugin for Sentry. It's a fork of `sentry-auth-google` that enables SSO authentication using any OIDC-compliant provider (Google, GitLab, etc.).
+This is an OpenID Connect (OIDC) authentication provider plugin for Sentry. It's based on `sentry-auth-google` and enables SSO authentication using any OIDC-compliant provider (Google, GitLab, etc.).
 
 ## Key Architecture
 
@@ -67,7 +67,7 @@ The plugin supports two configuration modes:
 ### Sentry Version Compatibility
 The code includes compatibility checks for different Sentry versions:
 - `apps.py`: Handles signature changes in `auth.register()` (Sentry 25.3.0+)
-- `views.py`: Handles `helper` → `pipeline` parameter rename (Sentry 25.6.0+)
+- `views.py`: Handles `helper` renamed to `pipeline` parameter (Sentry 25.6.0+)
 
 Always check method signatures before making changes to maintain backward compatibility.
 
