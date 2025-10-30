@@ -1,20 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
   <!-- Simple OIDC icon representing authentication/identity -->
+  <!-- 36x36 viewBox with center at 18,18 -->
+  
   <!-- Background circle -->
   <circle cx="18" cy="18" r="18" fill="#4A90E2"/>
   
   <!-- User icon in the center -->
   <g fill="#FFFFFF">
-    <!-- Head -->
+    <!-- Head (center at 18,13 with radius 5) -->
     <circle cx="18" cy="13" r="5"/>
     
-    <!-- Body/shoulders -->
+    <!-- Body/shoulders (curved path from bottom) -->
     <path d="M 9 29 Q 9 21, 18 21 Q 27 21, 27 29 L 9 29 Z"/>
   </g>
   
-  <!-- Lock overlay to represent security -->
+  <!-- Lock overlay positioned at bottom-right corner to represent security -->
   <g fill="#FFFFFF" opacity="0.9">
     <rect x="24" y="25" width="8" height="6" rx="1"/>
     <path d="M 25 25 V 23 Q 25 21, 28 21 Q 31 21, 31 23 V 25" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
   </g>
 </svg>
+

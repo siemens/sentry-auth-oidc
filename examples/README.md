@@ -19,18 +19,28 @@ The `oidc-icon.svg` file is a simple icon representing authentication/identity w
 
 ### Option 2: Use inline SVG as data URI
 
-You can also convert the SVG to a data URI and include it directly in the CSS:
+You can also convert the SVG to a data URI and include it directly in the CSS.
+To generate a base64-encoded data URI from the SVG file:
+
+```bash
+# On Linux/macOS
+base64 -w 0 oidc-icon.svg
+
+# Or use an online tool like https://yoksel.github.io/url-encoder/
+```
+
+Then use it in your CSS:
 
 ```css
 .provider-logo.oidc {
-    background-image: url('data:image/svg+xml;base64,...');
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy...');
 }
 ```
 
 ### Option 3: Create your own icon
 
 Feel free to create your own custom icon! The icon should:
-- Be square (36x36 pixels recommended)
+- Be square (36x36 viewBox recommended for SVG)
 - Work well at small sizes
 - Match your organization's branding
 

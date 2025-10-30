@@ -48,9 +48,10 @@ That's where different endpoint paths can be found.
 
 Detailed information can be found in the `ProviderConfig <https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`_ specification.
 
-You can also define ``OIDC_ISSUER`` to change the default provider name in the UI, even when the ``OIDC_DOMAIN`` is set.
+Configuration Options
+~~~~~~~~~~~~~~~~~~~~~
 
-Additionally, you can configure the provider display name and icon:
+You can customize the provider display name:
 
 .. code-block:: python
 
@@ -59,6 +60,9 @@ Additionally, you can configure the provider display name and icon:
 The ``OIDC_PROVIDER_NAME`` controls how the provider appears in the Sentry UI. The name is also used to generate
 the CSS class for the provider icon (converted to lowercase with spaces replaced by hyphens).
 For example, "My Company SSO" becomes the CSS class ``my-company-sso``.
+
+Note: The ``OIDC_ISSUER`` setting is used internally for token validation and is not displayed to users. 
+Use ``OIDC_PROVIDER_NAME`` to customize the display name instead.
 
 Custom Icon
 ~~~~~~~~~~~
