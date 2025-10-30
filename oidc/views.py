@@ -4,12 +4,11 @@ import logging
 
 from django.http import HttpRequest
 from rest_framework.response import Response
-
 from sentry.auth.services.auth.model import RpcAuthProvider
 from sentry.auth.view import AuthView
-from sentry.utils import json
 from sentry.organizations.services.organization.model import RpcOrganization
 from sentry.plugins.base.response import DeferredResponse
+from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
 
 from .constants import ERR_INVALID_RESPONSE, ISSUER

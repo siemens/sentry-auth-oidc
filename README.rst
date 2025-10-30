@@ -50,6 +50,38 @@ Detailed information can be found in the `ProviderConfig <https://openid.net/spe
 
 You can also define ``OIDC_ISSUER`` to change the default provider name in the UI, even when the ``OIDC_DOMAIN`` is set.
 
+Additionally, you can configure the provider display name and icon:
+
+.. code-block:: python
+
+    OIDC_PROVIDER_NAME = "My Company SSO"  # Defaults to "OIDC"
+
+The ``OIDC_PROVIDER_NAME`` controls how the provider appears in the Sentry UI. The name is also used to generate
+the CSS class for the provider icon (converted to lowercase with spaces replaced by hyphens).
+For example, "My Company SSO" becomes the CSS class ``my-company-sso``.
+
+Custom Icon
+~~~~~~~~~~~
+
+To add a custom icon for your OIDC provider, you can add custom CSS to your Sentry instance.
+The icon CSS class is generated from the ``OIDC_PROVIDER_NAME`` setting.
+
+For example, with ``OIDC_PROVIDER_NAME = "My Company SSO"``, add this CSS to your Sentry instance:
+
+.. code-block:: css
+
+    .provider-logo.my-company-sso {
+        background-image: url('/path/to/your/icon.svg');
+    }
+
+Alternatively, if you use the default ``OIDC_PROVIDER_NAME = "OIDC"``, the CSS class will be ``oidc``:
+
+.. code-block:: css
+
+    .provider-logo.oidc {
+        background-image: url('/path/to/your/icon.svg');
+    }
+
 If your provider doesn't support the ``OIDC_DOMAIN``, then you have to set these
 required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_endpoint, issuer).
 
