@@ -8,7 +8,7 @@
 # our own namespace here.
 deps:
 	git submodule update --init
-	poetry run pip install -r deps/sentry/requirements-dev-frozen.txt -e deps/sentry
+	uv pip install --index-url https://pypi.org/simple -r deps/sentry/requirements-dev-frozen.txt -e deps/sentry
 	cp -f deps/sentry/tests/conftest.py tests/conftest.py
 
 clean:
