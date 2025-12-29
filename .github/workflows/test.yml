@@ -60,7 +60,7 @@ jobs:
       - uses: abatilo/actions-poetry@v4
       - uses: actions/setup-node@v6
         with:
-          node-version: '18'
+          node-version: '24'
       - name: Setup required upstream yarn version
         run: yarn set version 1.22.21
       - run: |
