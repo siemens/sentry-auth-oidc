@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14.11
+        image: postgres:18.1
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
         # Set health checks to wait until postgres has started
