@@ -49,7 +49,7 @@ jobs:
         ports:
           - 11211:11211
       redis:
-        image: redis:6.2.14-alpine
+        image: redis:6.2.21-alpine
         ports:
           - 6379:6379
     steps:
