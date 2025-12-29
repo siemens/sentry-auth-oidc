@@ -286,22 +286,19 @@ toml = ["tomli"]
 
 [[package]]
 name = "fixtures"
-version = "4.1.0"
+version = "4.2.8"
 description = "Fixtures, reusable state for writing clean tests and more."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 files = [
-    {file = "fixtures-4.1.0-py3-none-any.whl", hash = "sha256:a43a55da406c37651aa86dd1ba6c3983a09d36d60fe5f72242872c8a4eeeb710"},
-    {file = "fixtures-4.1.0.tar.gz", hash = "sha256:82b1c5e69f615526ef6c067188a1e6c6067df7f88332509c99f8b8fdbb9776f3"},
+    {file = "fixtures-4.2.8-py3-none-any.whl", hash = "sha256:5f20487f2c085574b3a1389a3066a53926cf4896cdaa4e47a35167fcc8eefb1f"},
+    {file = "fixtures-4.2.8.tar.gz", hash = "sha256:ea146564a6666106c481f7c35f97a4d65485c84b0cc86a507597164b6cc0d849"},
 ]
-
-[package.dependencies]
-pbr = ">=5.7.0"
 
 [package.extras]
 docs = ["docutils"]
 streams = ["testtools"]
-test = ["mock", "testtools"]
+test = ["testtools"]
 
 [[package]]
 name = "flake8"
@@ -397,17 +394,6 @@ python-versions = ">=3.8"
 files = [
     {file = "pathspec-0.12.1-py3-none-any.whl", hash = "sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08"},
     {file = "pathspec-0.12.1.tar.gz", hash = "sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712"},
-]
-
-[[package]]
-name = "pbr"
-version = "6.1.0"
-description = "Python Build Reasonableness"
-optional = false
-python-versions = ">=2.6"
-files = [
-    {file = "pbr-6.1.0-py2.py3-none-any.whl", hash = "sha256:a776ae228892d8013649c0aeccbb3d5f99ee15e005a4cbb7e61d55a067b28a2a"},
-    {file = "pbr-6.1.0.tar.gz", hash = "sha256:788183e382e3d1d7707db08978239965e8b9e4e5ed42669bf4758186734d5f24"},
 ]
 
 [[package]]
