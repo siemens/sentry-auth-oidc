@@ -58,7 +58,7 @@ jobs:
         with:
           python-version: "3.13"
       - uses: abatilo/actions-poetry@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v6
         with:
           node-version: '18'
       - name: Setup required upstream yarn version
