@@ -16,6 +16,6 @@ services:
     ports:
       - 11211:11211
   redis:
-    image: redis:6.2.21-alpine
+    image: redis:8.4.0-alpine
     ports:
       - 6379:6379
