@@ -1,12 +1,10 @@
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 
-from django.http import HttpRequest
-
-import time
-
 import requests
+from django.http import HttpRequest
 from sentry.auth.provider import MigratingIdentityId
 from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Login, OAuth2Provider
 from sentry.auth.services.auth.model import RpcAuthProvider
@@ -19,6 +17,7 @@ from .constants import (
     CLIENT_SECRET,
     DATA_VERSION,
     ISSUER,
+    PROVIDER_NAME,
     SCOPE,
     TOKEN_ENDPOINT,
     USERINFO_ENDPOINT,
@@ -46,7 +45,7 @@ class OIDCLogin(OAuth2Login):
 
 
 class OIDCProvider(OAuth2Provider):
-    name = ISSUER
+    name = PROVIDER_NAME
     key = "oidc"
 
     def __init__(self, domain=None, domains=None, version=None, **config):
