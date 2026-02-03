@@ -42,6 +42,10 @@ Finally, obtain the API keys and the well-known account URL and plug them into y
 
     OIDC_DOMAIN = "https://accounts.google.com"  # e.g. for Google
 
+    # Required for Sentry 25.9+ to allow OIDC requests to external domains
+    # This prevents RestrictedIPAddress errors from the URL blocklist
+    SENTRY_DISALLOWED_IPS = ()
+
 The ``OIDC_DOMAIN`` defines where the OIDC configuration is going to be pulled from.
 Basically it specifies the OIDC server and adds the path ``.well-known/openid-configuration`` to it.
 That's where different endpoint paths can be found.
@@ -62,6 +66,10 @@ required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_
     OIDC_USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo" # e.g. for Google
 
     OIDC_ISSUER = "Google"
+
+    # Required for Sentry 25.9+ to allow OIDC requests to external domains
+    # This prevents RestrictedIPAddress errors from the URL blocklist
+    SENTRY_DISALLOWED_IPS = ()
 
 Development
 -----------
