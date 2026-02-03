@@ -29,3 +29,7 @@ if OIDC_DOMAIN:
 config_issuer = getattr(settings, "OIDC_ISSUER", None)
 if config_issuer:
     ISSUER = config_issuer
+
+# Provider name for display and icon CSS class matching
+# Defaults to "OIDC" which creates CSS class "oidc"
+PROVIDER_NAME = getattr(settings, "OIDC_PROVIDER_NAME", "OIDC")
