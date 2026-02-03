@@ -66,6 +66,22 @@ required endpoints by yourself (autorization_endpoint, token_endpoint, userinfo_
 Development
 -----------
 
+Prerequisites
+~~~~~~~~~~~~~
+
+For Sentry v26 and later, the build process requires `uv <https://github.com/astral-sh/uv>`_ to be installed:
+
+.. code-block:: bash
+
+    pip install uv
+
+Then install dependencies:
+
+.. code-block:: bash
+
+    poetry install --with test
+    make deps
+
 FAQ
 ~~~~~
 
