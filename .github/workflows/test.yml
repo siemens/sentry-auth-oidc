@@ -61,7 +61,7 @@ jobs:
           python-version: "3.13"
       - uses: abatilo/actions-poetry@v4
       - name: Install uv
-        run: pip install uv
+        run: pip install uv==0.9.28
       - uses: actions/setup-node@v6
         with:
           node-version: '24'

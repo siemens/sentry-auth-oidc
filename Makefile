@@ -11,8 +11,8 @@
 # our own namespace here.
 deps:
 	git submodule update --init
-	cd deps/sentry && uv export --format requirements.txt --output-file /tmp/sentry-requirements.txt --no-editable --no-hashes --no-emit-project
-	poetry run pip install -r /tmp/sentry-requirements.txt
+	cd deps/sentry && uv export --format requirements.txt --output-file ../../.sentry-requirements.txt --no-editable --no-hashes --no-emit-project
+	poetry run pip install -r .sentry-requirements.txt
 	poetry run python -c "import sysconfig, pathlib; pathlib.Path(sysconfig.get_path('purelib'), 'sentry.pth').write_text('$(shell pwd)/deps/sentry/src\n')"
 	cp -f deps/sentry/tests/conftest.py tests/conftest.py
 
