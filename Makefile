@@ -9,7 +9,10 @@
 # Likewise, their root-level conftest is not provided as a pytest plugin for
 # use outside their own tests, but we need their fixtures. We fetch them into
 # our own namespace here.
+#
+# Prerequisites: uv must be installed (pip install uv)
 deps:
+	@command -v uv >/dev/null 2>&1 || { echo >&2 "uv is required but not installed. Run: pip install uv"; exit 1; }
 	git submodule update --init
 	cd deps/sentry && uv export --format requirements.txt --output-file ../../.sentry-requirements.txt --no-editable --no-hashes --no-emit-project
 	poetry run pip install -r .sentry-requirements.txt
