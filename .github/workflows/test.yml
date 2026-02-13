@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - uses: psf/black@stable
         with:
           options: "--check ."
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18.1
+        image: postgres:18.2
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
         # Set health checks to wait until postgres has started
@@ -49,14 +49,14 @@ jobs:
         ports:
           - 11211:11211
       redis:
-        image: redis:8.4.0-alpine
+        image: redis:8.6.0-alpine
         ports:
           - 6379:6379
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - uses: abatilo/actions-poetry@v4
       - uses: actions/setup-node@v6
         with:
