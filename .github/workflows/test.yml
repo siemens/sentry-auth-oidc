@@ -70,6 +70,6 @@ jobs:
         run: yarn set version 1.22.21
       - run: |
           sudo apt-get update && sudo apt-get install -y libxmlsec1-dev libmaxminddb-dev
-          uv sync --frozen --active
+          uv sync --frozen
           make deps
           uv run pytest
