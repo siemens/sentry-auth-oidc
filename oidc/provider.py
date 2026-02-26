@@ -1,12 +1,10 @@
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 
-from django.http import HttpRequest
-
-import time
-
 import requests
+from django.http import HttpRequest
 from sentry.auth.provider import MigratingIdentityId
 from sentry.auth.providers.oauth2 import OAuth2Callback, OAuth2Login, OAuth2Provider
 from sentry.auth.services.auth.model import RpcAuthProvider
@@ -60,10 +58,7 @@ class OIDCProvider(OAuth2Provider):
         # this is a bit complex in Sentry's SSO implementation as we don't
         # provide a great way to get initial state for new setup pipelines
         # vs missing state in case of migrations.
-        if domains is None:
-            version = DATA_VERSION
-        else:
-            version = None
+        version = DATA_VERSION if domains is None else None
         self.version = version
         super().__init__(**config)
 
@@ -100,7 +95,7 @@ class OIDCProvider(OAuth2Provider):
         bearer_auth = "Bearer " + bearer_token
         retry_codes = [429, 500, 502, 503, 504]
         for retry in range(10):
-            if 10 < retry:
+            if retry > 10:
                 return {}
             r = requests.get(
                 endpoint + "?schema=openid",
