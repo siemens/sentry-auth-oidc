@@ -4,12 +4,11 @@ import logging
 
 from django.http import HttpRequest
 from rest_framework.response import Response
-
 from sentry.auth.services.auth.model import RpcAuthProvider
 from sentry.auth.view import AuthView
-from sentry.utils import json
 from sentry.organizations.services.organization.model import RpcOrganization
 from sentry.plugins.base.response import DeferredResponse
+from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
 
 from .constants import ERR_INVALID_RESPONSE, ISSUER
@@ -32,7 +31,7 @@ class FetchUser(AuthView):
             pipeline = kwargs["helper"]
         else:
             raise TypeError(
-                f"FetchUser.dispatch() is missing either the `pipeline` or the `helper` keyword argument."
+                "FetchUser.dispatch() is missing either the `pipeline` or the `helper` keyword argument."
             )
 
         data = pipeline.fetch_state("data")
@@ -40,30 +39,27 @@ class FetchUser(AuthView):
         try:
             id_token = data["id_token"]
         except KeyError:
-            logger.error("Missing id_token in OAuth response: %s" % data)
+            logger.error(f"Missing id_token in OAuth response: {data}")
             return pipeline.error(ERR_INVALID_RESPONSE)
 
         try:
             _, payload, _ = map(urlsafe_b64decode, id_token.split(".", 2))
         except Exception as exc:
-            logger.error("Unable to decode id_token: %s" % exc, exc_info=True)
+            logger.error(f"Unable to decode id_token: {exc}", exc_info=True)
             return pipeline.error(ERR_INVALID_RESPONSE)
 
         try:
             payload = json.loads(payload)
         except Exception as exc:
-            logger.error("Unable to decode id_token payload: %s" % exc, exc_info=True)
+            logger.error(f"Unable to decode id_token payload: {exc}", exc_info=True)
             return pipeline.error(ERR_INVALID_RESPONSE)
 
         if not payload.get("email"):
-            logger.error("Missing email in id_token payload: %s" % id_token)
+            logger.error(f"Missing email in id_token payload: {id_token}")
             return pipeline.error(ERR_INVALID_RESPONSE)
 
         # support legacy style domains with pure domain regexp
-        if self.version is None:
-            domain = extract_domain(payload["email"])
-        else:
-            domain = payload.get("hd")
+        domain = extract_domain(payload["email"]) if self.version is None else payload.get("hd")
 
         pipeline.bind_state("domain", domain)
         pipeline.bind_state("user", payload)
