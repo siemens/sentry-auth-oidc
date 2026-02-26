@@ -6,5 +6,13 @@
   ],
   "git-submodules": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["git-submodules"],
+      "matchPaths": ["deps/sentry"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "matchCurrentVersion": "/^[0-9]+\\.[0-9]+\\.[0-9]+$/"
+    }
+  ]
 }
