@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:18.1
+    image: postgres:18.3
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     # Set health checks to wait until postgres has started
@@ -12,10 +12,10 @@ services:
     ports:
       - 5432:5432
   memcached:
-    image: memcached:1.6.40-alpine
+    image: memcached:1.6.41-alpine
     ports:
       - 11211:11211
   redis:
-    image: redis:8.4.0-alpine
+    image: redis:8.6.1-alpine
     ports:
       - 6379:6379
