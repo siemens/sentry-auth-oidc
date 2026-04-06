@@ -46,7 +46,7 @@ jobs:
         ports:
           - 11211:11211
       redis:
-        image: redis:8.6.1-alpine
+        image: redis:8.6.2-alpine
         ports:
           - 6379:6379
     steps:
@@ -58,7 +58,7 @@ jobs:
           python-version: "3.13"
       - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7
         with:
-          version: '0.10.9'
+          version: '0.11.3'
           enable-cache: false
       - uses: actions/setup-node@v6
         with:
