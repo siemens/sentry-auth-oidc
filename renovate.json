@@ -6,5 +6,11 @@
   ],
   "git-submodules": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "matchDepNames": ["python"],
+      "groupName": "python"
+    }
+  ]
 }
