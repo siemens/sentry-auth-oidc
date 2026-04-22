@@ -1,6 +1,6 @@
 [project]
 name = "sentry-auth-oidc"
-version = "9.1.0"
+version = "9.1.1"
 description = "OpenID Connect authentication provider for Sentry"
 authors = [
     { name = "Max Wittig", email = "max.wittig@siemens.com" },
