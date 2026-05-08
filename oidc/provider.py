@@ -17,6 +17,7 @@ from .constants import (
     CLIENT_SECRET,
     DATA_VERSION,
     ISSUER,
+    PROVIDER_NAME,
     SCOPE,
     TOKEN_ENDPOINT,
     USERINFO_ENDPOINT,
@@ -44,7 +45,7 @@ class OIDCLogin(OAuth2Login):
 
 
 class OIDCProvider(OAuth2Provider):
-    name = ISSUER
+    name = PROVIDER_NAME
     key = "oidc"
 
     def __init__(self, domain=None, domains=None, version=None, **config):
