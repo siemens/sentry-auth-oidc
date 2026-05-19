@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18.3
+        image: postgres:18.4
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
         # Set health checks to wait until postgres has started
@@ -42,11 +42,11 @@ jobs:
         ports:
           - 5432:5432
       memcached:
-        image: memcached:1.6.41-alpine
+        image: memcached:1.6.42-alpine
         ports:
           - 11211:11211
       redis:
-        image: redis:8.6.2-alpine
+        image: redis:8.6.3-alpine
         ports:
           - 6379:6379
     steps:
@@ -58,7 +58,7 @@ jobs:
           python-version: "3.13"
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
-          version: '0.11.9'
+          version: '0.11.15'
           enable-cache: false
       - uses: actions/setup-node@v6
         with:
