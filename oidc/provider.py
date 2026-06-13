@@ -20,6 +20,7 @@ from .constants import (
     SCOPE,
     TOKEN_ENDPOINT,
     USERINFO_ENDPOINT,
+    USERINFO_NAME_CLAIM,
 )
 from .views import FetchUser, oidc_configure_view
 
@@ -123,7 +124,7 @@ class OIDCProvider(OAuth2Provider):
         return {
             "id": user_id,
             "email": user_info.get("email"),
-            "name": user_info.get("name"),
+            "name": user_info.get(USERINFO_NAME_CLAIM),
             "data": self.get_oauth_data(data),
             "email_verified": user_info.get("email_verified"),
         }
