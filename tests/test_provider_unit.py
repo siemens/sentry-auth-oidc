@@ -1,7 +1,11 @@
 import json
 import sys
 import types
+from collections.abc import Iterator
+from contextlib import contextmanager
+from importlib import import_module
 
+import pytest
 from django.conf import settings
 
 if not settings.configured:
@@ -47,6 +51,22 @@ class OAuth2Provider:
         return payload
 
 
+SENTRY_STUB_MODULES = [
+    "sentry",
+    "sentry.auth",
+    "sentry.auth.provider",
+    "sentry.auth.view",
+    "sentry.auth.providers.oauth2",
+    "sentry.auth.services.auth.model",
+    "sentry.organizations.services.organization.model",
+    "sentry.plugins.base.response",
+    "sentry.utils",
+    "sentry.utils.signing",
+]
+OIDC_MODULES = ["oidc.constants", "oidc.views", "oidc.provider"]
+MISSING = object()
+
+
 def module(name, **attrs):
     value = types.ModuleType(name)
     for key, attr in attrs.items():
@@ -55,27 +75,48 @@ def module(name, **attrs):
     return value
 
 
-module("sentry", auth=types.SimpleNamespace())
-module("sentry.auth")
-module("sentry.auth.provider", MigratingIdentityId=MigratingIdentityId)
-module("sentry.auth.view", AuthView=object)
-module(
-    "sentry.auth.providers.oauth2",
-    OAuth2Callback=OAuth2Callback,
-    OAuth2Login=OAuth2Login,
-    OAuth2Provider=OAuth2Provider,
-)
-module("sentry.auth.services.auth.model", RpcAuthProvider=object)
-module("sentry.organizations.services.organization.model", RpcOrganization=object)
-module("sentry.plugins.base.response", DeferredResponse=object)
-module("sentry.utils", json=json)
-module("sentry.utils.signing", urlsafe_b64decode=lambda value: value)
+@contextmanager
+def stubbed_provider_module() -> Iterator[types.ModuleType]:
+    module_names = [*SENTRY_STUB_MODULES, *OIDC_MODULES]
+    previous_modules = {name: sys.modules.get(name, MISSING) for name in module_names}
 
-from oidc.provider import OIDCProvider
+    try:
+        for name in OIDC_MODULES:
+            sys.modules.pop(name, None)
+
+        module("sentry", auth=types.SimpleNamespace())
+        module("sentry.auth")
+        module("sentry.auth.provider", MigratingIdentityId=MigratingIdentityId)
+        module("sentry.auth.view", AuthView=object)
+        module(
+            "sentry.auth.providers.oauth2",
+            OAuth2Callback=OAuth2Callback,
+            OAuth2Login=OAuth2Login,
+            OAuth2Provider=OAuth2Provider,
+        )
+        module("sentry.auth.services.auth.model", RpcAuthProvider=object)
+        module("sentry.organizations.services.organization.model", RpcOrganization=object)
+        module("sentry.plugins.base.response", DeferredResponse=object)
+        module("sentry.utils", json=json)
+        module("sentry.utils.signing", urlsafe_b64decode=lambda value: value)
+
+        yield import_module("oidc.provider")
+    finally:
+        for name, previous_module in previous_modules.items():
+            if previous_module is MISSING:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = previous_module
 
 
-def test_build_identity_uses_default_userinfo_name_claim():
-    provider = OIDCProvider(domains=["example.com"])
+@pytest.fixture
+def oidc_provider():
+    with stubbed_provider_module() as provider_module:
+        yield provider_module.OIDCProvider
+
+
+def test_build_identity_uses_default_userinfo_name_claim(oidc_provider):
+    provider = oidc_provider(domains=["example.com"])
     provider.get_user_info = lambda token: {
         "email": "jsmith@example.com",
         "name": "John Smith",
@@ -95,9 +136,10 @@ def test_build_identity_uses_default_userinfo_name_claim():
     assert result["name"] == "John Smith"
 
 
-def test_build_identity_uses_configured_userinfo_name_claim(monkeypatch):
-    provider = OIDCProvider(domains=["example.com"])
-    monkeypatch.setattr("oidc.provider.USERINFO_NAME_CLAIM", "preferred_username", raising=False)
+def test_build_identity_uses_configured_userinfo_name_claim(monkeypatch, oidc_provider):
+    provider = oidc_provider(domains=["example.com"])
+    provider_module = sys.modules["oidc.provider"]
+    monkeypatch.setattr(provider_module, "USERINFO_NAME_CLAIM", "preferred_username", raising=False)
     monkeypatch.setattr(
         provider,
         "get_user_info",
