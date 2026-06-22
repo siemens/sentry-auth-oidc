@@ -42,6 +42,10 @@ Finally, obtain the API keys and the well-known account URL and plug them into y
 
     OIDC_DOMAIN = "https://accounts.google.com"  # e.g. for Google
 
+    # Optional: UserInfo claim to use as Sentry's display name.
+    # Defaults to "name".
+    OIDC_USERINFO_NAME_CLAIM = "name"
+
 The ``OIDC_DOMAIN`` defines where the OIDC configuration is going to be pulled from.
 Basically it specifies the OIDC server and adds the path ``.well-known/openid-configuration`` to it.
 That's where different endpoint paths can be found.
