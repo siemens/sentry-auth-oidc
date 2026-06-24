@@ -61,3 +61,11 @@ class OIDCProviderTest(TestCase):
         }
         result = provider.build_config(state)
         assert result == {"domains": ["example.com"], "version": DATA_VERSION}
+
+    def test_provider_name_defaults_to_oidc(self):
+        provider = self.auth_provider_inst.get_provider()
+        assert provider.name == "OIDC"
+
+    def test_provider_key_is_oidc(self):
+        provider = self.auth_provider_inst.get_provider()
+        assert provider.key == "oidc"
