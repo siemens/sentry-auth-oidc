@@ -1,4 +1,7 @@
+import importlib
+
 import pytest
+from django.test import override_settings
 from sentry import auth
 from sentry.auth.exceptions import IdentityNotValid
 from sentry.models import AuthIdentity, AuthProvider
@@ -7,6 +10,7 @@ from sentry.testutils.silo import control_silo_test
 
 from oidc.constants import DATA_VERSION
 from oidc.provider import OIDCProvider
+from oidc.views import oidc_configure_view
 
 
 @control_silo_test
@@ -61,3 +65,25 @@ class OIDCProviderTest(TestCase):
         }
         result = provider.build_config(state)
         assert result == {"domains": ["example.com"], "version": DATA_VERSION}
+
+    def test_provider_name_defaults_to_oidc(self):
+        provider = self.auth_provider_inst.get_provider()
+        assert provider.name == "OIDC"
+
+    @override_settings(OIDC_ISSUER="Custom Issuer")
+    def test_provider_name_falls_back_to_issuer(self):
+        import oidc.constants
+
+        try:
+            reloaded_constants = importlib.reload(oidc.constants)
+            assert reloaded_constants.PROVIDER_NAME == "Custom Issuer"
+        finally:
+            importlib.reload(oidc.constants)
+
+    def test_provider_key_is_oidc(self):
+        provider = self.auth_provider_inst.get_provider()
+        assert provider.key == "oidc"
+
+    def test_configure_view_uses_provider_name(self):
+        response = oidc_configure_view(None, self.organization, self.auth_provider_inst)
+        assert response.context["provider_name"] == "OIDC"

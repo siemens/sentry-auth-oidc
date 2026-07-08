@@ -11,7 +11,7 @@ from sentry.plugins.base.response import DeferredResponse
 from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
 
-from .constants import ERR_INVALID_RESPONSE, ISSUER
+from .constants import ERR_INVALID_RESPONSE, PROVIDER_NAME
 
 logger = logging.getLogger("sentry.auth.oidc")
 
@@ -77,7 +77,7 @@ def oidc_configure_view(
     else:
         domains = config.get("domains")
     return DeferredResponse(
-        "oidc/configure.html", {"provider_name": ISSUER or "", "domains": domains or []}
+        "oidc/configure.html", {"provider_name": PROVIDER_NAME, "domains": domains or []}
     )
 
 

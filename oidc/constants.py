@@ -28,3 +28,6 @@ if OIDC_DOMAIN:
 config_issuer = getattr(settings, "OIDC_ISSUER", None)
 if config_issuer:
     ISSUER = config_issuer
+
+# Provider name for display in the Sentry UI.
+PROVIDER_NAME = getattr(settings, "OIDC_PROVIDER_NAME", None) or ISSUER or "OIDC"
