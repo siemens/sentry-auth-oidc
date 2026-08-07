@@ -42,11 +42,11 @@ jobs:
         ports:
           - 5432:5432
       memcached:
-        image: memcached:1.6.42-alpine
+        image: memcached:1.6.45-alpine
         ports:
           - 11211:11211
       redis:
-        image: redis:8.8.0-alpine
+        image: redis:8.10.0-alpine
         ports:
           - 6379:6379
     steps:
@@ -56,9 +56,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          version: '0.11.26'
+          version: '0.12.3'
           enable-cache: false
       - uses: actions/setup-node@v6
         with:
