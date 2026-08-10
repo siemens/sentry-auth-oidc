@@ -19,6 +19,51 @@ Install
 
     $ pip install sentry-auth-oidc
 
+Docker Compose Installation
+----------------------------
+
+If you are using the official Sentry docker-compose setup, you need to install the plugin in the web container.
+
+Create a ``requirements.txt`` file with the plugin and its hash:
+
+.. code-block:: text
+
+    sentry-auth-oidc==9.1.0 \
+        --hash=sha256:<your_version_hash>
+
+**Note:** Replace the version and hash with the appropriate values for your installation. You can use ``pip freeze`` after installing the package to get the exact version with hash, or download the package from PyPI and run ``sha256sum`` on it.
+
+Create a custom ``Dockerfile`` that extends the official Sentry image:
+
+.. code-block:: dockerfile
+
+    FROM getsentry/sentry:{{ sentry_version }}
+
+    COPY . /usr/src/sentry
+
+    RUN if [ -s /usr/src/sentry/enhance-image.sh ]; then \
+        /usr/src/sentry/enhance-image.sh; \
+    fi
+
+Create an ``enhance-image.sh`` script to install the plugin:
+
+.. code-block:: bash
+
+    #!/bin/bash
+
+    set -e
+
+    apt-get update
+    apt-get install --no-install-recommends -y git
+
+    if [ -s /usr/src/sentry/requirements.txt ]; then
+        pip install -U -r /usr/src/sentry/requirements.txt
+    fi
+
+    git apply /usr/src/sentry/*.patch
+
+Make sure the script is executable and rebuild your container.
+
 Example Setup for Google
 ------------------------
 
