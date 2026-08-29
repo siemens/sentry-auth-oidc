@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import json
 import sys
 import types
@@ -24,6 +26,9 @@ if not settings.configured:
     )
 
 
+REDIRECT_URI = "https://sentry.example.com/auth/sso/"
+
+
 class MigratingIdentityId:
     def __init__(self, id, legacy_id):
         self.id = id
@@ -37,10 +42,34 @@ class OAuth2Login:
     def get_authorize_params(self, state, redirect_uri):
         return {}
 
+    def dispatch(self, request, **kwargs):
+        # The real one redirects to the authorize URL it builds from these.
+        return self.get_authorize_params(state="state", redirect_uri=REDIRECT_URI)
+
 
 class OAuth2Callback:
     def __init__(self, **kwargs):
         self.kwargs = kwargs
+
+    def get_token_params(self, code, redirect_uri):
+        return {"code": code, "redirect_uri": redirect_uri}
+
+    def exchange_token(self, request, pipeline, code):
+        # The real one posts these to the token endpoint.
+        return self.get_token_params(code=code, redirect_uri=REDIRECT_URI)
+
+
+class Pipeline(dict):
+    def bind_state(self, key, value):
+        self[key] = value
+
+    def fetch_state(self, key=None):
+        return self.get(key)
+
+
+class Request:
+    def __init__(self, **query):
+        self.GET = query
 
 
 class OAuth2Provider:
@@ -115,6 +144,12 @@ def oidc_provider():
         yield provider_module.OIDCProvider
 
 
+@pytest.fixture
+def oidc_module():
+    with stubbed_provider_module() as provider_module:
+        yield provider_module
+
+
 def test_build_identity_uses_default_userinfo_name_claim(oidc_provider):
     provider = oidc_provider(domains=["example.com"])
     provider.get_user_info = lambda token: {
@@ -161,3 +196,60 @@ def test_build_identity_uses_configured_userinfo_name_claim(monkeypatch, oidc_pr
     )
 
     assert result["name"] == "jsmith"
+
+
+def test_login_challenges_the_verifier_it_bound(oidc_module):
+    login = oidc_module.OIDCLogin(client_id="client-id")
+    pipeline = Pipeline()
+
+    params = login.dispatch(Request(), pipeline=pipeline)
+
+    verifier = pipeline["code_verifier"]
+    digest = hashlib.sha256(verifier.encode("ascii")).digest()
+    assert 43 <= len(verifier) <= 128
+    assert params["code_challenge"] == base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
+    assert params["code_challenge_method"] == "S256"
+
+
+def test_login_keeps_the_verifier_when_the_callback_re_enters_the_step(oidc_module):
+    login = oidc_module.OIDCLogin(client_id="client-id")
+    pipeline = Pipeline()
+    login.dispatch(Request(), pipeline=pipeline)
+    verifier = pipeline["code_verifier"]
+
+    login.dispatch(Request(code="a-code"), pipeline=pipeline)
+
+    assert pipeline["code_verifier"] == verifier
+
+
+def test_login_sends_no_challenge_when_pkce_is_disabled(monkeypatch, oidc_module):
+    monkeypatch.setattr(oidc_module, "USE_PKCE", False)
+    login = oidc_module.OIDCLogin(client_id="client-id")
+    pipeline = Pipeline()
+
+    params = login.dispatch(Request(), pipeline=pipeline)
+
+    assert "code_challenge" not in params
+    assert "code_verifier" not in pipeline
+
+
+def test_callback_sends_the_verifier_the_login_bound(oidc_module):
+    callback = oidc_module.OIDCCallback()
+
+    params = callback.exchange_token(Request(), Pipeline(code_verifier="the-verifier"), "a-code")
+
+    assert params["code_verifier"] == "the-verifier"
+
+
+def test_callback_sends_no_verifier_when_none_was_bound(oidc_module):
+    callback = oidc_module.OIDCCallback()
+
+    params = callback.exchange_token(Request(), Pipeline(), "a-code")
+
+    assert "code_verifier" not in params
+
+
+def test_auth_pipeline_uses_the_callback_that_sends_the_verifier(oidc_module):
+    _, callback, _ = oidc_module.OIDCProvider(domains=["example.com"]).get_auth_pipeline()
+
+    assert isinstance(callback, oidc_module.OIDCCallback)
