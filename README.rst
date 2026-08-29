@@ -69,6 +69,18 @@ Use ``OIDC_PROVIDER_NAME`` to customize the display name instead.
 If ``OIDC_PROVIDER_NAME`` is not set, the provider name falls back to the configured or discovered issuer for
 backwards compatibility, and then to ``OIDC``.
 
+PKCE
+~~~~
+
+Authorization requests carry a PKCE code challenge (`RFC 7636
+<https://datatracker.ietf.org/doc/html/rfc7636>`_, ``S256``), and the token request the matching
+verifier, so providers that require a challenge can be used. Providers that do not support PKCE
+ignore both. To turn it off:
+
+.. code-block:: python
+
+    OIDC_USE_PKCE = False
+
 Custom Icon
 ~~~~~~~~~~~
 
