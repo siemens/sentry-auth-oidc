@@ -12,27 +12,29 @@ from sentry.organizations.services.organization.model import RpcOrganization
 from sentry.plugins.base.response import DeferredResponse
 
 from .constants import (
-    AUTHORIZATION_ENDPOINT,
     CLIENT_ID,
     CLIENT_SECRET,
     DATA_VERSION,
     PROVIDER_NAME,
     SCOPE,
-    TOKEN_ENDPOINT,
-    USERINFO_ENDPOINT,
     USERINFO_NAME_CLAIM,
+    get_authorization_endpoint,
+    get_token_endpoint,
+    get_userinfo_endpoint,
 )
 from .views import FetchUser, oidc_configure_view
 
 
 class OIDCLogin(OAuth2Login):
-    authorize_url = AUTHORIZATION_ENDPOINT
     client_id = CLIENT_ID
     scope = SCOPE
 
     def __init__(self, client_id, domains=None):
         self.domains = domains
         super().__init__(client_id=client_id)
+        # Resolved here rather than as a class attribute so the discovery
+        # document is only fetched once a login pipeline is actually built.
+        self.authorize_url = get_authorization_endpoint()
 
     def get_authorize_params(self, state, redirect_uri):
         params = super().get_authorize_params(state, redirect_uri)
@@ -78,7 +80,7 @@ class OIDCProvider(OAuth2Provider):
         return [
             OIDCLogin(domains=self.domains, client_id=self.get_client_id()),
             OAuth2Callback(
-                access_token_url=TOKEN_ENDPOINT,
+                access_token_url=get_token_endpoint(),
                 client_id=self.get_client_id(),
                 client_secret=self.get_client_secret(),
             ),
@@ -86,13 +88,13 @@ class OIDCProvider(OAuth2Provider):
         ]
 
     def get_refresh_token_url(self):
-        return TOKEN_ENDPOINT
+        return get_token_endpoint()
 
     def build_config(self, state):
         return {"domains": [state["domain"]], "version": DATA_VERSION}
 
     def get_user_info(self, bearer_token):
-        endpoint = USERINFO_ENDPOINT
+        endpoint = get_userinfo_endpoint()
         bearer_auth = "Bearer " + bearer_token
         retry_codes = [429, 500, 502, 503, 504]
         for retry in range(10):
