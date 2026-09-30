@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from django.http import HttpRequest
 from rest_framework.response import Response
@@ -16,6 +17,19 @@ from .constants import ERR_INVALID_RESPONSE, PROVIDER_NAME
 logger = logging.getLogger("sentry.auth.oidc")
 
 
+def get_pipeline(view: AuthView, kwargs: dict) -> Any:
+    # Until Sentry 25.6.0, the second argument to `dispatch` was called `helper`
+    # and was then renamed to `pipeline`.
+    if "pipeline" in kwargs:
+        return kwargs["pipeline"]
+    if "helper" in kwargs:
+        return kwargs["helper"]
+    raise TypeError(
+        f"{type(view).__name__}.dispatch() is missing either the `pipeline` or the `helper` "
+        "keyword argument."
+    )
+
+
 class FetchUser(AuthView):
     def __init__(self, domains, version, *args, **kwargs):
         self.domains = domains
@@ -23,16 +37,7 @@ class FetchUser(AuthView):
         super().__init__(*args, **kwargs)
 
     def dispatch(self, request: HttpRequest, **kwargs) -> Response:  # type: ignore
-        # Until Sentry 25.6.0, the second argument to this function was called `helper`
-        # and was then renamed to `pipeline`.
-        if "pipeline" in kwargs:
-            pipeline = kwargs["pipeline"]
-        elif "helper" in kwargs:
-            pipeline = kwargs["helper"]
-        else:
-            raise TypeError(
-                "FetchUser.dispatch() is missing either the `pipeline` or the `helper` keyword argument."
-            )
+        pipeline = get_pipeline(self, kwargs)
 
         data = pipeline.fetch_state("data")
 
