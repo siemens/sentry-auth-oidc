@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import base64
+import hashlib
+import secrets
 import time
 from collections.abc import Callable
 
@@ -19,20 +22,36 @@ from .constants import (
     PROVIDER_NAME,
     SCOPE,
     TOKEN_ENDPOINT,
+    USE_PKCE,
     USERINFO_ENDPOINT,
     USERINFO_NAME_CLAIM,
 )
-from .views import FetchUser, oidc_configure_view
+from .views import FetchUser, get_pipeline, oidc_configure_view
+
+
+def code_challenge(code_verifier: str) -> str:
+    digest = hashlib.sha256(code_verifier.encode("ascii")).digest()
+    return base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
 
 
 class OIDCLogin(OAuth2Login):
     authorize_url = AUTHORIZATION_ENDPOINT
     client_id = CLIENT_ID
     scope = SCOPE
+    code_verifier: str | None = None
 
     def __init__(self, client_id, domains=None):
         self.domains = domains
         super().__init__(client_id=client_id)
+
+    def dispatch(self, request: HttpRequest, **kwargs):  # type: ignore
+        # The callback re-enters this step carrying `code`, and the base class
+        # answers that by moving on. Minting only on the outbound leg keeps the
+        # return leg from replacing the verifier the token request needs.
+        if USE_PKCE and "code" not in request.GET:
+            self.code_verifier = secrets.token_urlsafe(64)
+            get_pipeline(self, kwargs).bind_state("code_verifier", self.code_verifier)
+        return super().dispatch(request, **kwargs)
 
     def get_authorize_params(self, state, redirect_uri):
         params = super().get_authorize_params(state, redirect_uri)
@@ -41,6 +60,26 @@ class OIDCLogin(OAuth2Login):
         # we should re-prompt them a second time with ``approval_prompt=force``
         params["approval_prompt"] = "force"
         params["access_type"] = "offline"
+        if self.code_verifier:
+            params["code_challenge"] = code_challenge(self.code_verifier)
+            params["code_challenge_method"] = "S256"
+        return params
+
+
+class OIDCCallback(OAuth2Callback):
+    code_verifier: str | None = None
+
+    def exchange_token(self, request, pipeline, code):
+        # None when the authorize request carried no challenge: a flow that
+        # started before PKCE was turned on, or one with OIDC_USE_PKCE off.
+        # Such a code has to be exchanged without a verifier.
+        self.code_verifier = pipeline.fetch_state("code_verifier")
+        return super().exchange_token(request, pipeline, code)
+
+    def get_token_params(self, code, redirect_uri):
+        params = dict(super().get_token_params(code, redirect_uri))
+        if self.code_verifier:
+            params["code_verifier"] = self.code_verifier
         return params
 
 
@@ -77,7 +116,7 @@ class OIDCProvider(OAuth2Provider):
     def get_auth_pipeline(self):
         return [
             OIDCLogin(domains=self.domains, client_id=self.get_client_id()),
-            OAuth2Callback(
+            OIDCCallback(
                 access_token_url=TOKEN_ENDPOINT,
                 client_id=self.get_client_id(),
                 client_secret=self.get_client_secret(),
