@@ -198,11 +198,12 @@ def test_build_identity_uses_configured_userinfo_name_claim(monkeypatch, oidc_pr
     assert result["name"] == "jsmith"
 
 
-def test_login_challenges_the_verifier_it_bound(oidc_module):
+@pytest.mark.parametrize("pipeline_keyword", ["pipeline", "helper"])
+def test_login_challenges_the_verifier_it_bound(oidc_module, pipeline_keyword):
     login = oidc_module.OIDCLogin(client_id="client-id")
     pipeline = Pipeline()
 
-    params = login.dispatch(Request(), pipeline=pipeline)
+    params = login.dispatch(Request(), **{pipeline_keyword: pipeline})
 
     verifier = pipeline["code_verifier"]
     digest = hashlib.sha256(verifier.encode("ascii")).digest()
