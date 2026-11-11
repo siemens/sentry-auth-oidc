@@ -62,7 +62,7 @@ jobs:
           enable-cache: false
       - uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version: '26'
       - name: Setup required upstream yarn version
         run: yarn set version 1.22.21
       - run: |
