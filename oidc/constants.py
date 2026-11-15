@@ -37,7 +37,7 @@ PROVIDER_NAME = getattr(settings, "OIDC_PROVIDER_NAME", None) or ISSUER or "OIDC
 
 _well_known_lock = threading.Lock()
 _well_known: dict | None = None
-_well_known_last_failure: float = 0.0
+_well_known_last_failure: float | None = None
 
 
 def get_well_known() -> dict:
@@ -60,7 +60,10 @@ def get_well_known() -> dict:
     with _well_known_lock:
         if _well_known is not None:
             return _well_known
-        if time.monotonic() - _well_known_last_failure < WELL_KNOWN_RETRY_AFTER:
+        if (
+            _well_known_last_failure is not None
+            and time.monotonic() - _well_known_last_failure < WELL_KNOWN_RETRY_AFTER
+        ):
             return {}
         try:
             response = requests.get(WELL_KNOWN_URL, timeout=WELL_KNOWN_TIMEOUT)

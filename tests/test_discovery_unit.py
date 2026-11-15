@@ -91,7 +91,7 @@ def test_failed_fetch_falls_back_to_static_settings_and_does_not_raise(
     # The failed attempt is not retried before OIDC_WELL_KNOWN_RETRY_AFTER has elapsed.
     assert len(calls) == 1
 
-    constants._well_known_last_failure = 0.0
+    constants._well_known_last_failure = None
     behaviour[0] = WELL_KNOWN
     assert provider.get_refresh_token_url() == WELL_KNOWN["token_endpoint"]
     assert len(calls) == 2
@@ -118,3 +118,15 @@ def test_without_domain_static_settings_are_used(requests_get):
         assert constants.WELL_KNOWN_URL is None
         assert login.authorize_url == "https://example.com/auth"
         assert calls == []
+
+
+def test_first_fetch_is_not_suppressed_shortly_after_boot(
+    provider_with_domain, requests_get, monkeypatch
+):
+    calls, _ = requests_get
+    _, constants = provider_with_domain
+    # time.monotonic() may start near zero, e.g. right after the host booted.
+    monkeypatch.setattr(constants.time, "monotonic", lambda: 1.0)
+
+    assert constants.get_token_endpoint() == WELL_KNOWN["token_endpoint"]
+    assert calls == [constants.WELL_KNOWN_URL]
