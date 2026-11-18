@@ -50,6 +50,17 @@ The ``OIDC_DOMAIN`` defines where the OIDC configuration is going to be pulled f
 Basically it specifies the OIDC server and adds the path ``.well-known/openid-configuration`` to it.
 That's where different endpoint paths can be found.
 
+The discovery document is fetched lazily on first use (i.e. when a login is started) and cached for
+the lifetime of the process, so Sentry processes that never perform a login do not depend on the
+identity provider being reachable at startup. If the fetch fails, a warning is logged and the
+statically configured ``OIDC_*_ENDPOINT`` settings (if any) are used instead. The behaviour can be
+tuned with:
+
+.. code-block:: python
+
+    OIDC_WELL_KNOWN_TIMEOUT = 15.0      # seconds, request timeout for the discovery document
+    OIDC_WELL_KNOWN_RETRY_AFTER = 30.0  # seconds to wait before retrying after a failed fetch
+
 Detailed information can be found in the `ProviderConfig <https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`_ specification.
 
 Configuration Options
@@ -66,8 +77,9 @@ login, identity-linking, and organization authentication settings screens.
 
 Note: The ``OIDC_ISSUER`` setting is used internally for token validation and is not displayed to users.
 Use ``OIDC_PROVIDER_NAME`` to customize the display name instead.
-If ``OIDC_PROVIDER_NAME`` is not set, the provider name falls back to the configured or discovered issuer for
-backwards compatibility, and then to ``OIDC``.
+If ``OIDC_PROVIDER_NAME`` is not set, the provider name falls back to the configured ``OIDC_ISSUER``
+for backwards compatibility, and then to ``OIDC``. The configure view additionally falls back to the
+issuer from the discovery document.
 
 Custom Icon
 ~~~~~~~~~~~
